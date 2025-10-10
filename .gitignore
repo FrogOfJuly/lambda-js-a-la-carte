@@ -1,0 +1,4 @@
+output/*
+!output/main.pdf
+.DS_Store
+.vscode
