@@ -144,7 +144,7 @@
 %%
 %% The "title" command has an optional parameter,
 %% allowing the author to define a "short title" to be used in page headers.
-\title{JavaScript à la Carte}
+\title{$\lambda_{\texttt{JS}}$ à la Carte}
 `'
 %%
 %% The "author" command and its associated commands are used to define
@@ -208,26 +208,26 @@
 
 \section{à-la-carte-ness}
 
-\todo[inline]{Why Rocq\cite{the_coq_development_team_2024_14542673}, coq a la carte as a foundation, why can't use directly, imporovements, what I want to do}
-
-\todo[inline]{Main citation: Coq à la Carte\cite{forster2020coq}}
+\todo[inline]{Why Rocq\cite{the_coq_development_team_2024_14542673}, Coq à la Carte\cite{forster2020coq} as a foundation, why can't use directly, imporovements, what I want to do}
 
 \section{Targets for formalization}
 
+\todo[inline]{There exists industrial cases where it is paramount to have reusable proofs. For example: React vs Signals proposal.}
+
 There is yet to be a significant test of modularity for mainstream programming languages formalization.
 
-We propose a case study that would evaluate existing approaches for modular Rocq developments. 
-The aim of the study is to find and address, when possible, their shortcomings, improve tooling and enable them to support practical proofs. 
-We choose JavaScript as a target language for mechanisation.
-
-There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend for with new features.
+There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
 Being one of the most used language, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
-Lack of sophisticated type system streamlines the encoding and makes it possible to gradually prove language properties, while keeping the formalization open to extension.
+Lack of sophisticated type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
 Extensive specification\cite{ECMA} in natural language is also a very welcome addition.
+
+Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeScript) that enable different styles of programming. 
+Ability to reuse proofs about core language for dialects would be a nice showcase of modularity. 
+The t39 proposal process\cite{t39} is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted to core language.
 
 To the best of our knowledge no modular technique from above was ever used for mechanisation of a mainstream language.
 
-The following theorems seem to be good candidates for the study: 
+We plan to, at first, follow $\lambda_{JS}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following properties.
 
 \begin{itemize}
   \item preservation of local closeness w.r.t small step semantics
@@ -247,11 +247,12 @@ forall c e, lc e
 \end{lstlisting}
 \end{itemize}
 
-\todo[inline]{Find citation for dialects and t39 proposal}
 
-Moreover, JavaScript has several frameworks\cite{React} and dialects\cite{}  that enable different styles of programming. 
-Ability to reuse proofs about core language for dialects would be a nice showcase of modularity. 
-The t39 proposal process\cite{} is transparent and permits mechanization of ongoing specification of nightly features before they are adopted to core language.
+
+
+
+The aim of the project is not to formalize the whole existing JavaScript semantics, but rather to test how far one can go with mechanisation, while maintaining extendability. 
+With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
 
 \section{Discussion}
 
