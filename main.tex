@@ -207,11 +207,22 @@
 
 \section{à-la-carte-ness}
 
-\todo[inline]{Why Rocq\cite{the_coq_development_team_2024_14542673},  as a foundation, why can't use directly, imporovements, what I want to do}
 
-We follow closely ideas from Coq à la Carte\cite{forster2020coq} to enable modularity. Direct use of the meta tooling is prohibitively difficult due to outdated Metarocq, but the overall structure of reasoning holds surprisingly well even without them. 
+
+\todo[inline]{We chose Rocq\cite{the_coq_development_team_2024_14542673} because of metatooling support}
+
+We follow closely ideas from Coq à la Carte\cite{forster2020coq} to enable modularity. 
+Direct use of the meta programming tools developed there is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}, but the overall structure of reasoning holds surprisingly well even without them. 
+
+\todo[inline]{Why can't use directly}
+
+\todo[inline]{Explain functors}
+
+\todo[inline]{Imporovements, what I want to do}
 
 \section{Targets for formalization}
+
+\todo[inline]{One can do the same formalization as $\lambda_{\texttt{JS}}$ for Featherweight Java\cite{igarashi2001featherweight}.}
 
 \todo[inline]{There exists industrial cases where it is paramount to have reusable proofs. For example: React vs Signals proposal.}
 
@@ -249,11 +260,9 @@ forall c e, lc e
 \end{itemize}
 
 
-
-
-
 The aim of the project is not to formalize the whole existing JavaScript semantics, but rather to test how far one can go with mechanisation, while maintaining extendability. 
 With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
+Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
 
 \section{Discussion}
 
@@ -278,7 +287,7 @@ Proof modularity comes with the cost of departing from the usual way of reasonin
 Even in case of Coq à la Carte departure is not quite dramatic, but still requires to rethink how one approaches proofs.
 
 The ideal solution would be to have a correspondence between modular and inductive proofs. 
-There is an existing work\cite{tabareau2021marriage}\cite{cohen2024trocq} that could enable that proofs transfer between "equivalent" datatypes. 
+There is an existing work\cite{cohen2024trocq} that could enable that proofs transfer between "equivalent" datatypes. 
 
 \todo[inline]{Talk about how they achieve that and is it possible to leverage that for functor representation of chosen datatype.}
 
