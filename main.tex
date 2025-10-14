@@ -112,6 +112,12 @@
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
+\newcommand\code[1]{{\tt\small #1}}
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{ltblue}{rgb}{0,0.4,0.4}
+\definecolor{dkviolet}{rgb}{0.3,0,0.5}
+\definecolor{dkblue}{rgb}{0.3,0,0.5}
+
 \lstdefinestyle{mystyle}{
     % backgroundcolor=\color{backcolour},   
     commentstyle=\color{codegreen},
@@ -130,6 +136,107 @@
     showtabs=false,                  
     tabsize=2
 }
+
+% lstlisting coq style (inspired from a file of Assia Mahboubi)
+\lstdefinelanguage{Coq}{ 
+    % Anything betweeen $ becomes LaTeX math mode
+    mathescape=true,
+    % Comments may or not include Latex commands
+    texcl=false, 
+    % Vernacular commands
+    morekeywords=[1]{Section, Module, End, Require, Import, Export,
+        Variable, Variables, Parameter, Parameters, Axiom, Hypothesis,
+        Hypotheses, Notation, Local, Tactic, Reserved, Scope, Open, Close,
+        Bind, Delimit, Definition, Let, Ltac, Fixpoint, CoFixpoint, Add,
+        Morphism, Relation, Implicit, Arguments, Unset, Contextual,
+        Strict, Prenex, Implicits, Inductive, CoInductive, Record,
+        Structure, Canonical, Coercion, Context, Class, Global, Instance,
+        Program, Infix, Theorem, Lemma, Corollary, Proposition, Fact,
+        Remark, Example, Proof, Goal, Save, Qed, Defined, Hint, Resolve,
+        Rewrite, View, Search, Show, Print, Printing, All, Eval, Check,
+        Projections, inside, outside, Def},
+    % Gallina
+    morekeywords=[2]{forall, exists, exists2, fun, fix, cofix, struct,
+        match, with, end, as, in, return, let, if, is, then, else, for, of,
+        nosimpl, when},
+    % Sorts
+    morekeywords=[3]{Type, Prop, Set, true, false, option},
+    % Various tactics, some are std Coq subsumed by ssr, for the manual purpose
+    morekeywords=[4]{pose, set, move, case, elim, apply, clear, hnf,
+        intro, intros, generalize, rename, pattern, after, destruct,
+        induction, using, refine, inversion, injection, rewrite, congr,
+        unlock, compute, ring, field, fourier, replace, fold, unfold,
+        change, cutrewrite, simpl, have, suff, wlog, suffices, without,
+        loss, nat_norm, assert, cut, trivial, revert, bool_congr, nat_congr,
+        symmetry, transitivity, auto, split, left, right, autorewrite},
+    % Terminators
+    morekeywords=[5]{by, done, exact, reflexivity, tauto, romega, omega,
+        assumption, solve, contradiction, discriminate},
+    % Control
+    morekeywords=[6]{do, last, first, try, idtac, repeat},
+    % Comments delimiters, we do turn this off for the manual
+    morecomment=[s]{(*}{*)},
+    % Spaces are not displayed as a special character
+    showstringspaces=false,
+    % String delimiters
+    morestring=[b]",
+    morestring=[d]’,
+    % Size of tabulations
+    tabsize=3,
+    % Enables ASCII chars 128 to 255
+    extendedchars=false,
+    % Case sensitivity
+    sensitive=true,
+    % Automatic breaking of long lines
+    breaklines=false,
+    % Default style fors listings
+    basicstyle=\small,
+    % Position of captions is bottom
+    captionpos=b,
+    % flexible columns
+    columns=[l]flexible,
+    % Style for (listings') identifiers
+    identifierstyle={\ttfamily\color{black}},
+    % Style for declaration keywords
+    keywordstyle=[1]{\ttfamily\color{dkviolet}},
+    % Style for gallina keywords
+    keywordstyle=[2]{\ttfamily\color{dkgreen}},
+    % Style for sorts keywords
+    keywordstyle=[3]{\ttfamily\color{ltblue}},
+    % Style for tactics keywords
+    keywordstyle=[4]{\ttfamily\color{dkblue}},
+    % Style for terminators keywords
+    keywordstyle=[5]{\ttfamily\color{dkred}},
+    %Style for iterators
+    %keywordstyle=[6]{\ttfamily\color{dkpink}},
+    % Style for strings
+    stringstyle=\ttfamily,
+    % Style for comments
+    commentstyle={\ttfamily\color{dkgreen}},
+    %moredelim=**[is][\ttfamily\color{red}]{/&}{&/},
+    literate=
+    {\\forall}{{\color{dkgreen}{$\forall\;$}}}1
+    {\\exists}{{$\exists\;$}}1
+    {<-}{{$\leftarrow\;$}}1
+    {=>}{{$\Rightarrow\;$}}1
+    {==}{{\code{==}\;}}1
+    {==>}{{\code{==>}\;}}1
+    %    {:>}{{\code{:>}\;}}1
+    {->}{{$\rightarrow\;$}}1
+    {<->}{{$\leftrightarrow\;$}}1
+    {<==}{{$\leq\;$}}1
+    {\#}{{$^\star$}}1 
+    {\\o}{{$\circ\;$}}1 
+    {\@}{{$\cdot$}}1 
+    {\/\\}{{$\wedge\;$}}1
+    {\\\/}{{$\vee\;$}}1
+    {++}{{\code{++}}}1
+    {~}{{$\sim$}}1
+    {\@\@}{{$@$}}1
+    {\\mapsto}{{$\mapsto\;$}}1
+    {\\hline}{{\rule{\linewidth}{0.5pt}}}1
+    %
+}[keywords,comments,strings]
 
 \lstset{style=mystyle}
 
@@ -211,18 +318,59 @@
 
 \todo[inline]{We chose Rocq\cite{the_coq_development_team_2024_14542673} because of metatooling support}
 
-We follow closely ideas from Coq à la Carte\cite{forster2020coq} to enable modularity. 
-Direct use of the meta programming tools developed there is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}, but the overall structure of reasoning holds surprisingly well even without them. 
+We follow closely ideas from Data types à la Carte\cite{swierstra2008data} and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
+Sadly, direct use of the meta programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}, but the overall structure of reasoning holds well even without them. 
 
-\todo[inline]{Why can't use directly}
+The main idea is to separate closed inductive types into modular feature functors and non modular fixpoint. 
+Resulting feature functors allow to per-functor proofs without relaying on a particular structure of overarching type.
+Once desired proofs are complete its possible to assemble the type through inlined fixpoint application and proofs through open recursion technique.
+
+The apporach is illustrated with an example \ref{fig:alacart_example} when the untyped lambda calculus is extended with booleans. 
+
+There is more to it then that, so ones who 
+
+\begin{figure}
+  \begin{lstlisting}[language=Coq]
+(* Exp.v *)
+Inductive Exp := 
+(* Exp type can be seen as inline fixpoint 
+   of coproduct of feature functors  *)
+  | inj_ite : exp_ite Exp -> Exp
+  | inj_lam : exp_lam Exp -> Exp.
+Fixpoint thrm : forall (e : Exp) -> ...
+intros. destruct e.
+(* open recursion *)
+  - apply (thrm_ite Exp thrm ...).
+  - apply (thrm_lam Exp thrm ...).
+Defined.
+(* ITE.v *)
+Section exp_ite.
+Exp : Type.
+Inductive exp_ite := 
+  | ite : Exp -> Exp -> Exp
+  | boolt_lit : bool -> Exp.
+(* assume overarching property *)
+Variable thrm : forall (e : Exp) -> ... .
+(* Prove corresponding per-functor property *)
+Definition thrm_ite : forall (e : exp_lam) -> ... .
+End exp_ite.
+(* Lambda.v *)
+(* Analogous to ite.v *)
+\end{lstlisting}
+  \caption{minimal example}
+  \label{fig:alacart_example}
+\end{figure}
+
+
 
 \todo[inline]{Explain functors}
+\todo[inline]{Explain ELPI}
 
 \todo[inline]{Imporovements, what I want to do}
 
 \section{Targets for formalization}
 
-\todo[inline]{One can do the same formalization as $\lambda_{\texttt{JS}}$ for Featherweight Java\cite{igarashi2001featherweight}.}
+
 
 \todo[inline]{There exists industrial cases where it is paramount to have reusable proofs. For example: React vs Signals proposal.}
 
@@ -239,30 +387,20 @@ The t39 proposal process\cite{t39} is transparent and well documented thus permi
 
 To the best of our knowledge no modular technique from above was ever used for mechanisation of a mainstream language.
 
-We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following properties.
+We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the progress theorem.
 
-\begin{itemize}
-  \item preservation of local closeness w.r.t small step semantics
-
-\begin{lstlisting}[numbers=none]
-forall c e c' e', lc e 
-               -> step c e c' e' 
-               -> lc e'. 
+\begin{lstlisting}[numbers=none, language=Coq]
+Theorem progress : forall c e, lc e -> 
+         isValue e \/ 
+         isError e \/ 
+         (exists c' e', step c e c' e').
 \end{lstlisting}
-
-\item progress theorem 
-\begin{lstlisting}[numbers=none]
-forall c e, lc e 
-         -> isValue e 
-         \/ isError e
-         \/ (exists c' e', step c e c' e').
-\end{lstlisting}
-\end{itemize}
-
 
 The aim of the project is not to formalize the whole existing JavaScript semantics, but rather to test how far one can go with mechanisation, while maintaining extendability. 
 With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
 Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
+
+\todo[inline]{One can do the same formalization as $\lambda_{\texttt{JS}}$ for Featherweight Java\cite{igarashi2001featherweight}. }
 
 \section{Discussion}
 
@@ -287,7 +425,7 @@ Proof modularity comes with the cost of departing from the usual way of reasonin
 Even in case of Coq à la Carte departure is not quite dramatic, but still requires to rethink how one approaches proofs.
 
 The ideal solution would be to have a correspondence between modular and inductive proofs. 
-There is an existing work\cite{cohen2024trocq} that could enable that proofs transfer between "equivalent" datatypes. 
+There is an existing work\cite{cohen2024trocq} that could enable the proofs transfer between "equivalent" datatypes. 
 
 \todo[inline]{Talk about how they achieve that and is it possible to leverage that for functor representation of chosen datatype.}
 
