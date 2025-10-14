@@ -322,12 +322,12 @@ We follow closely ideas from Data types à la Carte\cite{swierstra2008data} and 
 Sadly, direct use of the meta programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}, but the overall structure of reasoning holds well even without them. 
 
 The main idea is to separate closed inductive types into modular feature functors and non modular fixpoint. 
-Resulting feature functors allow to per-functor proofs without relaying on a particular structure of overarching type.
+Resulting feature functors allow per-functor proofs without relaying on a particular structure of overarching type.
 Once desired proofs are complete its possible to assemble the type through inlined fixpoint application and proofs through open recursion technique.
 
-The apporach is illustrated with an example \ref{fig:alacart_example} when the untyped lambda calculus is extended with booleans. 
+The apporach is illustrated with an example \ref{fig:alacart_example} that roughtly outlines extension of untyped lambda calculus with with booleans and if-then-else constructions. 
 
-There is more to it then that, so ones who 
+However, there is much more to it that is possible to cover here.
 
 \begin{figure}
   \begin{lstlisting}[language=Coq]
@@ -361,9 +361,8 @@ End exp_ite.
   \label{fig:alacart_example}
 \end{figure}
 
+Next piece that is important to discuss is metaprogramming tools that are available in Rocq. 
 
-
-\todo[inline]{Explain functors}
 \todo[inline]{Explain ELPI}
 
 \todo[inline]{Imporovements, what I want to do}
@@ -379,11 +378,11 @@ There is yet to be a significant test of modularity for mainstream programming l
 There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
 Being one of the most used language, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
 Lack of sophisticated type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
-Extensive specification\cite{ECMA} in natural language is also a very welcome addition.
+ECMA\cite{ECMA}, an extensive specification in natural language, is also a very welcome addition.
 
 Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeScript) that enable different styles of programming. 
 Ability to reuse proofs about core language for dialects would be a nice showcase of modularity. 
-The t39 proposal process\cite{t39} is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted to core language.
+The t39 proposal process\cite{t39} is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
 
 To the best of our knowledge no modular technique from above was ever used for mechanisation of a mainstream language.
 
