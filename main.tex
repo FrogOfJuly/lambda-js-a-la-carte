@@ -314,18 +314,15 @@
 
 \section{à-la-carte-ness}
 
-
-
-\todo[inline]{We chose Rocq\cite{the_coq_development_team_2024_14542673} because of metatooling support}
-
 We follow closely ideas from Data types à la Carte\cite{swierstra2008data} and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
-Sadly, direct use of the meta programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}, but the overall structure of reasoning holds well even without them. 
+Sadly, direct use of the meta-programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}. 
+Howeverm overall structure of reasoning holds well even without them. 
 
 The main idea is to separate closed inductive types into modular feature functors and non modular fixpoint. 
 Resulting feature functors allow open-recursion-style per-functor proofs without relaying on a particular structure of overarching type.
 Once desired proofs are complete its possible to assemble the type through inlined fixpoint application and proofs by "closing" the recursion over per-fucntor proofs.
 
-The apporach is illustrated with an example \ref{fig:alacart_example} that roughtly outlines extension of untyped lambda calculus with with booleans and if-then-else constructions. 
+The apporach is illustrated with an example at Fig \ref{fig:alacart_example} that roughtly outlines extension of untyped lambda calculus with with booleans and if-then-else constructions. 
 However, there is much more to it that is possible to cover here.
 
 
@@ -355,7 +352,7 @@ Variable thrm : forall (e : Exp) -> ... .
 Definition thrm_ite : forall (e : exp_lam) -> ... .
 End exp_ite.
 (* Lambda.v *)
-(* Analogous to ite.v *)
+(* Ommited for brievity, but analogous to ite.v *)
 \end{lstlisting}
   \caption{minimal example}
   \label{fig:alacart_example}
@@ -364,15 +361,12 @@ End exp_ite.
 It is noticable even in this very simple example that there is some boilerplate code that is tedeous to write by hand. 
 So, naturally it is tempting to automate its generation. 
 
-Next piece that is important to discuss is metaprogramming tools that are available in Rocq. 
-
-\todo[inline]{Explain ELPI}
-
-\todo[inline]{Imporovements, what I want to do}
+Coq-Elpi\cite{tassi2025elpi} is a rule-based meta-lanauge for Rocq\cite{the_coq_development_team_2024_14542673} that gives a programmer an ability to generate tactics, inductive types and manipulate syntax with binders. 
+We chose it over Metarocq for it's debugging infrostructure, binder handling and availability of onboarding material.
 
 \section{Targets for formalization}
 
-\todo[inline]{There exists industrial cases where it is paramount to have reusable proofs. For example: React vs Signals proposal.}
+
 
 There is yet to be a significant test of modularity for mainstream programming languages formalization.
 
@@ -385,7 +379,9 @@ Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeSc
 Ability to reuse proofs about core language for dialects would be a nice showcase of modularity. 
 The t39 proposal process\cite{t39} is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
 
-To the best of our knowledge no modular technique from above was ever used for mechanisation of a mainstream programming language.
+\todo[inline]{There exists industrial cases where it is paramount to have reusable proofs. For example: React vs Signals proposal.}
+
+To the best of our knowledge no modular proof technique from above was successfully used for mechanisation of a mainstream programming language.
 
 We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the progress theorem.
 
@@ -396,30 +392,40 @@ Theorem progress : forall c e, lc e ->
          (exists c' e', step c e c' e').
 \end{lstlisting}
 
-The aim of the project is not to formalize the whole existing JavaScript semantics, but rather to test how far one can go with mechanisation, while maintaining extendability. 
+The aim of the project is niether to formalize the whole existing JavaScript semantics nor to develop a generic modular framework. 
+Rather the aim is to test how far one can go with mechanisation by specialising existing approach to JavaScript, while maintaining extendability. 
 With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
 Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
 
-\todo[inline]{One can do the same formalization as $\lambda_{\texttt{JS}}$ for Featherweight Java\cite{igarashi2001featherweight}. }
+% \todo[inline]{One can do the same formalization as $\lambda_{\texttt{JS}}$ for Featherweight Java\cite{igarashi2001featherweight}. }
 
 \section{Discussion}
 
 There are other solutions to increase modularity of proofs. 
 
-\todo[inline]{Proof modularity papaers}
+\medskip
 
-\begin{enumerate}
-  \item Family Polymorphism\cite{jin2023extensible}
-  \todo[inline]{Rocq plugin for type family polymorphism}
-  \item Program Logics à la Carte\cite{vistrup2025program}
-  \todo[inline]{Coinduction with ITrees.}
-  \item Interpreters à la Carte\cite{van2022intrinsically}
-  \todo[inline]{Containers as functors for fixpoints}
-\end{enumerate}
+\textbf{Extensible metatheory mechanization via family polymorphism.}
+
+\todo[inline]{Rocq plugin for type family polymorphism}
+
+\medskip
+\textbf{Program Logics à la Carte.}
+
+
+\todo[inline]{Coinduction with ITrees.}
+
+\medskip
+\textbf{Interpreters à la Carte.}
+
+\todo[inline]{Containers as functors for fixpoints}
+
+\medskip
 
 \todo[inline]{Argue about that indirect encoding is too taxing.}
 
-\todo[inline]{It's interesting to look into the possibility of gradually encoding calculus of inductive constructions in a modular fashion.}
+
+% \todo[inline]{It's interesting to look into the possibility of gradually encoding calculus of inductive constructions in a modular fashion.}
 
 Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
 Even in case of Coq à la Carte departure is not quite dramatic, but still requires to rethink how one approaches proofs.
@@ -429,7 +435,7 @@ There is an existing work\cite{cohen2024trocq} that could enable the proofs tran
 
 \todo[inline]{Talk about how they achieve that and is it possible to leverage that for functor representation of chosen datatype.}
 
-\todo[inline]{Is it possible to use containers as a meta language, while presreving ability to do actual reasoning with inductive types in Rocq?}
+% \todo[inline]{Is it possible to use containers as a meta language, while presreving ability to do actual reasoning with inductive types in Rocq?}
 
 
 \bibliographystyle{ACM-Reference-Format}
