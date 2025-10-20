@@ -312,19 +312,20 @@
 
 \todo[inline]{Half a page for overview and explaining motivation}
 
-\section{à-la-carte-ness}
+\section{Inlined functor fixpoints }
 
 We follow closely ideas from Data types à la Carte\cite{swierstra2008data} and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
 Sadly, direct use of the meta-programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}. 
 Howeverm overall structure of reasoning holds well even without them. 
 
-The main idea is to separate closed inductive types into modular feature functors and non modular fixpoint. 
+The main idea is to separate closed inductive types into modular feature functors and non modular fixpoint operation. 
+Following this idea nievly will lead to incosistency, so the fixpoint operation is not present explicitly, but inlined each time.
+
 Resulting feature functors allow open-recursion-style per-functor proofs without relaying on a particular structure of overarching type.
 Once desired proofs are complete its possible to assemble the type through inlined fixpoint application and proofs by "closing" the recursion over per-fucntor proofs.
 
 The apporach is illustrated with an example at Fig \ref{fig:alacart_example} that roughtly outlines extension of untyped lambda calculus with with booleans and if-then-else constructions. 
 However, there is much more to it that is possible to cover here.
-
 
 \begin{figure}
 \begin{lstlisting}[language=Coq]
@@ -354,7 +355,7 @@ End exp_ite.
 (* Lambda.v *)
 (* Ommited for brievity, but analogous to ite.v *)
 \end{lstlisting}
-  \caption{minimal example}
+  \caption{Minimal example of language extension with ITE constructions.}
   \label{fig:alacart_example}
 \end{figure}
 
@@ -428,7 +429,7 @@ There are other solutions to increase modularity of proofs.
 % \todo[inline]{It's interesting to look into the possibility of gradually encoding calculus of inductive constructions in a modular fashion.}
 
 Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
-Even in case of Coq à la Carte departure is not quite dramatic, but still requires to rethink how one approaches proofs.
+Even if in case of Coq à la Carte the departure is not quite dramatic, it still requires to rethink how one approaches proofs.
 
 The ideal solution would be to have a correspondence between modular and inductive proofs. 
 There is an existing work\cite{cohen2024trocq} that could enable the proofs transfer between "equivalent" datatypes. 
