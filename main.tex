@@ -410,29 +410,33 @@ There are other solutions to increase modularity of proofs.
 
 \medskip
 
-\textbf{Extensible metatheory mechanization via family polymorphism. }
+\textbf{Extensible metatheory mechanization via family polymorphism. } FPOP\cite{jin2023extensible} and Rocqet\cite{ebresafe2025certified} are a Rocq language extensions which compile modular inductive types into Rocq modules allowing extension with the help of 
+OO-inspired family polymorphism with late bindings. 
 
-And its further development accounting for nested induction -- nested family polymorphism\cite{ebresafe2025certified} compile extendable inductive types into Rocq modules allowing extension with the help of 
-OO-style late bindings. 
-
-Despite its success in formalizing ComCert and CakeML its extensible type representation is virtually incompatible with the rest of the Rocq which increases learning curve and locks development to this particular dialect. 
-
-\medskip
-\textbf{Program Logics à la Carte.}
-
-`'
-
-\todo[inline]{Coinduction with ITrees.}
+Despite its success in formalizing CompCert and CakeML its modular type representation as modules is virtually incompatible with the rest of Rocq which increases learning curve and locks development to this particular dialect. 
+\todo[inline]{Am I misinterpreting all of this and it's OK and actually the best solution?}
 
 \medskip
-\textbf{Interpreters à la Carte.}
+\textbf{Program Logics à la Carte}\cite{vistrup2025program} achieves modularity by encoding effect-emitting(e.g. non-termination, exception, concurrency, etc.) components of the language as fragments of program logic. 
+Language semantics is expressed as interaction trees\cite{xia2019interaction}: coinductively defined datatype for representing effectful computations. 
+Development provides several program logics fragment which correspond to commonly encountered pieces in different programming languages. 
 
-\todo[inline]{Containers as functors for fixpoints}
+From the practical point of view however, this approach introduces prohibitive degree of indirection to encoding and proofs, especially if it is required to define new program logic fragments.
+
+\todo[inline]{Does it?}
+
 
 \medskip
+\textbf{Intrinsically-typed definitional interpreters {\`a} la carte}\cite{van2022intrinsically} leverages finatary containers\cite{altenkirch2015indexed} and algebras over them to introduce "intrinsically-typed language fragments".
+Those bring together common syntax and semantics of chosen language features, while allowing composition. 
 
-\todo[inline]{Argue about that indirect encoding is too taxing.}
+While very satisfying on it's own this approach also suffers from indirectness of modular type encoding. Learning curve for container machinery is quite steep and thus makes it hard to adopt this way of doing proofs for larger languages.
 
+
+
+\todo[inline]{Should be worded better.}
+
+\medskip
 
 % \todo[inline]{It's interesting to look into the possibility of gradually encoding calculus of inductive constructions in a modular fashion.}
 
