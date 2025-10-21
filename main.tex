@@ -427,6 +427,13 @@ inductive types and manipulate syntax with binders.
 %We chose it over Metarocq for it's debugging infrostructure, binder handling and %availability of onboarding material.
 
 \section{Targets for Mechanization}
+The aim of the project is to test how far one can go with mechanisation by specialising shallow a-la-carte approach to JavaScript, while maintaining extendability. It is important to facilitate that 
+The aim of the project is niether to formalize the whole existing JavaScript semantics nor to develop a generic modular framework. 
+Rather the aim is to test how far one can go with mechanisation by specialising shallow a-la-carte approach to JavaScript, while maintaining extendability. 
+With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
+Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
+
+
 
 There is a significant progress in applying modular techniquies to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however ...??
 
