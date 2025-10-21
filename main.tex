@@ -352,33 +352,6 @@ and proofs can be assembled from
 per-functors proofs,
 by ``closing'' recursion over them.
 
-
-
-
-
-%We follow closely ideas from Data types à la Carte\cite{swierstra2008data}
-%and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
-%Sadly,
-%direct use of the meta-programming tools developed in the latter is 
-%prohibitively difficult due to outdated Metarocq~\cite{sozeau2020metacoq}. 
-%%% However, overall structure of reasoning holds well even without them. 
-
-%The main idea is to separate closed inductive types into modular feature 
-%functors and non-modular fixed point operation. 
-% Following this idea naively will lead to inconsistency, so the fixed point 
-% operation is not present explicitly, but inlined each time.
-
-%Resulting feature functors allow open-recursion-style per-functor proofs without 
-%relying on a particular structure of overarching type.
-%Once desired proofs are complete its possible to assemble the type through 
-%inlined fixed point application and proofs by "closing" the recursion over per-
-%fucntor proofs.
-
-%The apporach is illustrated with an example at Fig \ref{fig:alacart_example} 
-%that roughtly outlines extension of untyped lambda calculus with with booleans 
-%and if-then-else constructions. 
-%However, there is much more to it that is possible to cover here.
-
 \begin{figure}
 \begin{lstlisting}[language=Coq]
 (* Exp.v *)
@@ -411,6 +384,10 @@ End exp_ite.
 \end{figure}
 
 These ideas are outlined in Figure~\ref{fig:alacart_example}.
+%The apporach is illustrated with an example at Fig \ref{fig:alacart_example} 
+%that roughtly outlines extension of untyped lambda calculus with with booleans 
+%and if-then-else constructions. 
+%However, there is much more to it that is possible to cover here.
 As can be seen in the code example,
 there is a considerable amount of boilerplate,
 and it can be automatically generated.
@@ -418,26 +395,12 @@ Coq-Elpi~\cite{tassi2025elpi} is a rule-based metalanguage for Rocq~\cite{the_co
 it gives a programmer an ability to generate tactics,
 inductive types and manipulate syntax with binders.
 
-%It is noticable even in this very simple example that there is some boilerplate 
-%code that is tedeous to write by hand. 
-%So, naturally it is tempting to automate its generation. 
-
-%Coq-Elpi\cite{tassi2025elpi} is a rule-based meta-lanauge for %Rocq\cite{the_coq_development_team_2024_14542673} that gives a programmer an 
-%bility to generate tactics, inductive types and manipulate syntax with binders. 
-%We chose it over Metarocq for it's debugging infrostructure, binder handling and %availability of onboarding material.
-
 \section{Targets for Mechanization}
-The aim of the project is to test how far one can go with mechanisation by specialising shallow a-la-carte approach to JavaScript, while maintaining extendability. It is important to facilitate that 
-The aim of the project is niether to formalize the whole existing JavaScript semantics nor to develop a generic modular framework. 
-Rather the aim is to test how far one can go with mechanisation by specialising shallow a-la-carte approach to JavaScript, while maintaining extendability. 
-With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
-Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
 
-
+The goal of this project is to investigate how far one can go while developing extendable mechanisation framework by specialising shallow a-la-carte approach to JavaScript. 
+It is important to facilitate that we niether aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
 
 There is a significant progress in applying modular techniquies to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however ...??
-
-\todo[inline]{Turns out there are recent developments in applying modular approaches. That could have been akward.. }
 
 There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
 Being one of the most used language, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
@@ -448,9 +411,9 @@ Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeSc
 Ability to reuse proofs about core language for dialects would be a nice showcase of modularity. 
 The t39 proposal process\cite{t39} is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
 
-\todo[inline]{There exists industrial cases where it is paramount to have reusable proofs. For example: React vs Signals proposal.}
-
-To the best of our knowledge no modular proof technique from above was successfully used for mechanisation of a mainstream programming language.
+With the above stated goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
+Furthermore there is an ongoing proposal that brings reactivity into the language. 
+It is beneficial to have a formal gurantee that reactivity as described there is sound and compatable with existing implementations in React, Solid and etc.
 
 We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following theorems.
 
@@ -465,12 +428,7 @@ Theorem preservation : forall c e c' e', lc e
                                       -> lc e'.
 \end{lstlisting}
 
-The aim of the project is niether to formalize the whole existing JavaScript semantics nor to develop a generic modular framework. 
-Rather the aim is to test how far one can go with mechanisation by specialising shallow a-la-carte approach to JavaScript, while maintaining extendability. 
-With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
 Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
-
-% \todo[inline]{One can do the same formalization as $\lambda_{\texttt{JS}}$ for Featherweight Java\cite{igarashi2001featherweight}. }
 
 \section{Related work}
 
