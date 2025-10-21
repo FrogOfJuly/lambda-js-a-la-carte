@@ -312,17 +312,17 @@
 
 \todo[inline]{Half a page for overview and explaining motivation}
 
-\section{Inlined functor fixpoints }
+\section{Inlined functor fixed points}
 
 We follow closely ideas from Data types à la Carte\cite{swierstra2008data} and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
 Sadly, direct use of the meta-programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}. 
 Howeverm overall structure of reasoning holds well even without them. 
 
-The main idea is to separate closed inductive types into modular feature functors and non modular fixpoint operation. 
-Following this idea nievly will lead to incosistency, so the fixpoint operation is not present explicitly, but inlined each time.
+The main idea is to separate closed inductive types into modular feature functors and non modular fixed point operation. 
+Following this idea nievly will lead to incosistency, so the fixed point operation is not present explicitly, but inlined each time.
 
 Resulting feature functors allow open-recursion-style per-functor proofs without relaying on a particular structure of overarching type.
-Once desired proofs are complete its possible to assemble the type through inlined fixpoint application and proofs by "closing" the recursion over per-fucntor proofs.
+Once desired proofs are complete its possible to assemble the type through inlined fixed point application and proofs by "closing" the recursion over per-fucntor proofs.
 
 The apporach is illustrated with an example at Fig \ref{fig:alacart_example} that roughtly outlines extension of untyped lambda calculus with with booleans and if-then-else constructions. 
 However, there is much more to it that is possible to cover here.
@@ -331,7 +331,7 @@ However, there is much more to it that is possible to cover here.
 \begin{lstlisting}[language=Coq]
 (* Exp.v *)
 Inductive Exp := 
-(* Exp type can be seen as inlined fixpoint 
+(* Exp type can be seen as inlined fixed point 
    of coproduct of feature functors exp_ite and exp_lam *)
   | inj_ite : exp_ite Exp -> Exp
   | inj_lam : exp_lam Exp -> Exp.
@@ -398,7 +398,7 @@ Theorem preservation : forall c e c' e', lc e
 \end{lstlisting}
 
 The aim of the project is niether to formalize the whole existing JavaScript semantics nor to develop a generic modular framework. 
-Rather the aim is to test how far one can go with mechanisation by specialising existing approach to JavaScript, while maintaining extendability. 
+Rather the aim is to test how far one can go with mechanisation by specialising shallow a-la-carte approach to JavaScript, while maintaining extendability. 
 With this goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
 Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
 
@@ -430,7 +430,7 @@ From the practical point of view however, this approach introduces prohibitive d
 \textbf{Intrinsically-typed definitional interpreters {\`a} la carte}\cite{van2022intrinsically} leverages finatary containers\cite{altenkirch2015indexed} and algebras over them to introduce "intrinsically-typed language fragments".
 Those bring together common syntax and semantics of chosen language features, while allowing composition. 
 
-While very satisfying on it's own this approach also suffers from indirectness of modular type encoding. Learning curve for container machinery is quite steep and thus makes it hard to adopt this way of doing proofs for larger languages.
+While very satisfying on it's own, this approach also suffers from indirectness of modular type encoding. Learning curve for container machinery is quite steep and thus makes it hard to adopt for proofs about larger languages.
 
 
 
