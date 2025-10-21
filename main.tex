@@ -340,7 +340,7 @@ is prohibitively difficult
 due to its dependency on an outdated version of Metarocq~\cite{sozeau2020metacoq}.
 
 It is possible to represent an inductive type as a fixed point of a functor,
-but attempting such a decomposition na\"ively leads to inconsistency. 
+but attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix (forall A. A -> False)} allows to obtain proof of \texttt{False}}. 
 Therefore, it is not possible to use explicit fixed point operations for inductive type decomposition in theorem provers.
 As shown in the Coq à la Carte approach,
 this issue can be circumvented by \emph{inlining} fixed point operations.  
@@ -397,23 +397,20 @@ inductive types and manipulate syntax with binders.
 
 \section{Targets for Mechanization}
 
-The goal of this project is to investigate how far one can go while developing extendable mechanisation framework by specialising shallow a-la-carte approach to JavaScript. 
-It is important to facilitate that we niether aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
-
-There is a significant progress in applying modular techniquies to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however ...??
+The goal of this work is to investigate how far one can go while developing extendable mechanization of JavaScript by specializing shallow a-la-carte approach. 
+It is important to facilitate that we neither aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
 
 There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
-Being one of the most used language, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
-Lack of sophisticated type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
-ECMA\cite{ECMA}, an extensive specification in natural language, is also a very welcome addition.
+There was a significant progress recently in applying modular techniques to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however none of targeted JavaScript.
 
+Being one of the most used languages, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
+Lack of type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
+ECMA\cite{ECMA}, an extensive specification in natural language, is an established source of truth for the language semantics in natural language.
+
+With the goal stated above in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
 Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeScript) that enable different styles of programming. 
-Ability to reuse proofs about core language for dialects would be a nice showcase of modularity. 
-The t39 proposal process\cite{t39} is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
-
-With the above stated goal in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
-Furthermore there is an ongoing proposal that brings reactivity into the language. 
-It is beneficial to have a formal gurantee that reactivity as described there is sound and compatable with existing implementations in React, Solid and etc.
+The t39\cite{t39} proposal process is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
+Ability to reuse proofs about core language for dialects and upcoming feathres would be a nice showcase of modularity. For example, it is beneficial to have a formal guarantee that reactivity as described in signals proposal\footnote{https://github.com/tc39/proposal-signals} is sound and compatible with existing reactivity implementations in React, Solid and etc.
 
 We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following theorems.
 
@@ -447,7 +444,7 @@ Despite its success in formalizing CompCert and CakeML its modular type represen
 Language semantics is expressed as interaction trees\cite{xia2019interaction}: coinductively defined datatype for representing effectful computations. 
 Development provides several program logics fragment which correspond to commonly encountered pieces in different programming languages. 
 
-From the practical point of view however, this approach introduces prohibitive degree of indirection to encoding and proofs, especially if it is required to define new program logic fragments.
+From the practical point of view however, this approach introduces considerable indirection to encoding and proofs, especially if it is required to define new program logic fragments.
 
 \todo[inline]{Does it?}
 
