@@ -312,20 +312,72 @@
 
 \todo[inline]{Half a page for overview and explaining motivation}
 
-\section{Inlined functor fixed points}
+\section{Background à la Carte}
+% Inlined Functor Fixed Points
 
-We follow closely ideas from Data types à la Carte\cite{swierstra2008data} and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
-Sadly, direct use of the meta-programming tools developed in the latter is prohibitively difficult due to outdated Metarocq\cite{sozeau2020metacoq}. 
-Howeverm overall structure of reasoning holds well even without them. 
+%- any inductive type: functor + fixpoint of that functor
+%- functor is modular, fixpoint is not modular
+%- not functor: any type -> bottom type
+%- fixpoint of not will give bottom, that's why coq agda etc. don't allow to make a fixpoint operator as in the datatypes a la carte
 
-The main idea is to separate closed inductive types into modular feature functors and non modular fixed point operation. 
-Following this idea nievly will lead to incosistency, so the fixed point operation is not present explicitly, but inlined each time.
+%- everyone who is doing a la carte, are trying to avoid this pitfall
+%- coq a la carte: their way around is straightforward: we will inline it every time we need to go around
+%- by inlining they mean: see fig 1
+%- open recursion proofs, closing recursion; see fig 1
+%- boilerplate: coq-elpi instead of metarocq: because of ...
 
-Resulting feature functors allow open-recursion-style per-functor proofs without relaying on a particular structure of overarching type.
-Once desired proofs are complete its possible to assemble the type through inlined fixed point application and proofs by "closing" the recursion over per-fucntor proofs.
 
-The apporach is illustrated with an example at Fig \ref{fig:alacart_example} that roughtly outlines extension of untyped lambda calculus with with booleans and if-then-else constructions. 
-However, there is much more to it that is possible to cover here.
+
+\emph{Datatypes à la Carte}~\cite{swierstra2008data}
+popularizes the idea of
+\emph{extensible} inductive datatypes. 
+One of the efforts to bring this idea to proof assistants
+was done by \emph{Coq à la Carte}~\cite{forster2020coq},
+which enables modularity in proofs.
+However,
+directly adopting the implementation~\cite{forster2020coq} in practice
+is prohibitively difficult
+due to its dependency on an outdated version of Metarocq~\cite{sozeau2020metacoq}.
+
+It is possible to represent an inductive type as a fixed point of a functor,
+but attempting such a decomposition na\"ively leads to inconsistency. 
+Therefore, it is not possible to use explicit fixed point operations for inductive type decomposition in theorem provers.
+As shown in the Coq à la Carte approach,
+this issue can be circumvented by \emph{inlining} fixed point operations.  
+Resulting functors will then allow open-recursion-style per-functor proofs,
+which will not rely on a particular structure of the decomposed type.
+Once the desired proofs are complete,
+the type can be assembled from the desired feature functors as a fixed point of their coproduct,
+and proofs can be assembled from
+per-functors proofs,
+by ``closing'' recursion over them.
+
+
+
+
+
+%We follow closely ideas from Data types à la Carte\cite{swierstra2008data}
+%and  Coq à la Carte\cite{forster2020coq} to enable modularity. 
+%Sadly,
+%direct use of the meta-programming tools developed in the latter is 
+%prohibitively difficult due to outdated Metarocq~\cite{sozeau2020metacoq}. 
+%%% However, overall structure of reasoning holds well even without them. 
+
+%The main idea is to separate closed inductive types into modular feature 
+%functors and non-modular fixed point operation. 
+% Following this idea naively will lead to inconsistency, so the fixed point 
+% operation is not present explicitly, but inlined each time.
+
+%Resulting feature functors allow open-recursion-style per-functor proofs without 
+%relying on a particular structure of overarching type.
+%Once desired proofs are complete its possible to assemble the type through 
+%inlined fixed point application and proofs by "closing" the recursion over per-
+%fucntor proofs.
+
+%The apporach is illustrated with an example at Fig \ref{fig:alacart_example} 
+%that roughtly outlines extension of untyped lambda calculus with with booleans 
+%and if-then-else constructions. 
+%However, there is much more to it that is possible to cover here.
 
 \begin{figure}
 \begin{lstlisting}[language=Coq]
@@ -352,20 +404,29 @@ Variable thrm : forall (e : Exp) -> ... .
 (* Prove corresponding per-functor property *)
 Definition thrm_ite : forall (e : exp_lam) -> ... .
 End exp_ite.
-(* Lambda.v *)
-(* Ommited for brievity, but analogous to ite.v *)
+(* Lambda.v: ommited, similar to ITE.v *)
 \end{lstlisting}
   \caption{Minimal example of language extension with ITE constructions.}
   \label{fig:alacart_example}
 \end{figure}
 
-It is noticable even in this very simple example that there is some boilerplate code that is tedeous to write by hand. 
-So, naturally it is tempting to automate its generation. 
+These ideas are outlined in Figure~\ref{fig:alacart_example}.
+As can be seen in the code example,
+there is a considerable amount of boilerplate,
+and it can be automatically generated.
+Coq-Elpi~\cite{tassi2025elpi} is a rule-based metalanguage for Rocq~\cite{the_coq_development_team_2024_14542673};
+it gives a programmer an ability to generate tactics,
+inductive types and manipulate syntax with binders.
 
-Coq-Elpi\cite{tassi2025elpi} is a rule-based meta-lanauge for Rocq\cite{the_coq_development_team_2024_14542673} that gives a programmer an ability to generate tactics, inductive types and manipulate syntax with binders. 
-We chose it over Metarocq for it's debugging infrostructure, binder handling and availability of onboarding material.
+%It is noticable even in this very simple example that there is some boilerplate 
+%code that is tedeous to write by hand. 
+%So, naturally it is tempting to automate its generation. 
 
-\section{Targets for formalization}
+%Coq-Elpi\cite{tassi2025elpi} is a rule-based meta-lanauge for %Rocq\cite{the_coq_development_team_2024_14542673} that gives a programmer an 
+%bility to generate tactics, inductive types and manipulate syntax with binders. 
+%We chose it over Metarocq for it's debugging infrostructure, binder handling and %availability of onboarding material.
+
+\section{Targets for Mechanization}
 
 There is a significant progress in applying modular techniquies to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however ...??
 
