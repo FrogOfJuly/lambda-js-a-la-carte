@@ -331,8 +331,8 @@ However, there is much more to it that is possible to cover here.
 \begin{lstlisting}[language=Coq]
 (* Exp.v *)
 Inductive Exp := 
-(* Exp type can be seen as inline fixpoint 
-   of coproduct of feature functors  *)
+(* Exp type can be seen as inlined fixpoint 
+   of coproduct of feature functors exp_ite and exp_lam *)
   | inj_ite : exp_ite Exp -> Exp
   | inj_lam : exp_lam Exp -> Exp.
 Fixpoint thrm : forall (e : Exp) -> ...
@@ -367,9 +367,9 @@ We chose it over Metarocq for it's debugging infrostructure, binder handling and
 
 \section{Targets for formalization}
 
+There is a significant progress in applying modular techniquies to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however ...??
 
-
-There is yet to be a significant test of modularity for mainstream programming languages formalization.
+\todo[inline]{Turns out there are recent developments in applying modular approaches. That could have been akward.. }
 
 There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
 Being one of the most used language, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
@@ -384,13 +384,17 @@ The t39 proposal process\cite{t39} is transparent and well documented thus permi
 
 To the best of our knowledge no modular proof technique from above was successfully used for mechanisation of a mainstream programming language.
 
-We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the progress theorem.
+We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following theorems.
 
 \begin{lstlisting}[numbers=none, language=Coq]
 Theorem progress : forall c e, lc e -> 
          isValue e \/ 
          isError e \/ 
          (exists c' e', step c e c' e').
+
+Theorem preservation : forall c e c' e', lc e
+                                      -> step c e c' e'
+                                      -> lc e'.
 \end{lstlisting}
 
 The aim of the project is niether to formalize the whole existing JavaScript semantics nor to develop a generic modular framework. 
@@ -406,13 +410,17 @@ There are other solutions to increase modularity of proofs.
 
 \medskip
 
-\textbf{Extensible metatheory mechanization via family polymorphism.}
+\textbf{Extensible metatheory mechanization via family polymorphism. }
 
-\todo[inline]{Rocq plugin for type family polymorphism}
+And its further development accounting for nested induction -- nested family polymorphism\cite{ebresafe2025certified} compile extendable inductive types into Rocq modules allowing extension with the help of 
+OO-style late bindings. 
+
+Despite its success in formalizing ComCert and CakeML its extensible type representation is virtually incompatible with the rest of the Rocq which increases learning curve and locks development to this particular dialect. 
 
 \medskip
 \textbf{Program Logics à la Carte.}
 
+`'
 
 \todo[inline]{Coinduction with ITrees.}
 
@@ -431,8 +439,8 @@ There are other solutions to increase modularity of proofs.
 Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
 Even if in case of Coq à la Carte the departure is not quite dramatic, it still requires to rethink how one approaches proofs.
 
-The ideal solution would be to have a correspondence between modular and inductive proofs. 
-There is an existing work\cite{cohen2024trocq} that could enable the proofs transfer between "equivalent" datatypes. 
+The ideal solution would be to have a correspondence between proofs for modular representation and equivalent inductive types. 
+There is an existing work\cite{cohen2024trocq} that could enable such transfer of proofs. 
 
 \todo[inline]{Talk about how they achieve that and is it possible to leverage that for functor representation of chosen datatype.}
 
