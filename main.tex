@@ -117,6 +117,7 @@
 \definecolor{ltblue}{rgb}{0,0.4,0.4}
 \definecolor{dkviolet}{rgb}{0.3,0,0.5}
 \definecolor{dkblue}{rgb}{0.3,0,0.5}
+\definecolor{dkred}{rgb}{0.5,0,0.3}
 
 \lstdefinestyle{mystyle}{
     % backgroundcolor=\color{backcolour},   
@@ -331,7 +332,7 @@ is prohibitively difficult
 due to its dependency on an outdated version of Metarocq~\cite{sozeau2020metacoq}.
 
 It is possible to represent an inductive type as a fixed point of a functor,
-but attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix (forall A. A -> False)} allows to obtain proof of \texttt{False}.}. 
+but attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix ($\Lambda$ A. A -> False)} allows to obtain proof of \texttt{False}. See appendix Figure \ref{appendix:false_proof}}. 
 Therefore, it is not possible to use explicit fixed point operations for inductive type decomposition in theorem provers.
 As shown in the Coq à la Carte approach,
 this issue can be circumvented by \emph{inlining} fixed point operations.  
@@ -492,5 +493,37 @@ There is an existing work\cite{cohen2024trocq} that could enable such transfer o
 
 \appendix
 
+\section{Additional figures}
+
+\begin{figure}[H]
+\begin{lstlisting}[language=Coq]
+(* Positivity checker won't allow direct definition
+   as showed in Data types a la carte:
+   data Fix f = In (f (Fix f))
+*)
+Axiom Fix : (Type -> Type) -> Type.
+Axiom fix_def : forall {f : Type -> Type}, Fix f = f (Fix f).
+
+Theorem fix_implies_false : False. 
+Proof.
+    remember (Fix (fun A => A -> False)) as A.
+    assert (not_a : A -> False). { 
+        intros. remember X as X'. 
+        clear HeqX'.
+        rewrite HeqA in X.
+        rewrite fix_def in X.
+        rewrite <- HeqA in X.
+        exact (X X').
+    }
+    apply not_a.
+    rewrite HeqA.
+    rewrite fix_def.
+    rewrite <- HeqA.
+    exact not_a.
+Qed.
+\end{lstlisting}
+\caption{\texttt{Fix} existence implies falsehood.}
+  \label{appendix:false_proof}
+\end{figure}
 
 \end{document}
