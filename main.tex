@@ -159,7 +159,7 @@
     % Gallina
     morekeywords=[2]{forall, exists, exists2, fun, fix, cofix, struct,
         match, with, end, as, in, return, let, if, is, then, else, for, of,
-        nosimpl, when},
+        nosimpl, when, eqn},
     % Sorts
     morekeywords=[3]{Type, Prop, Set, true, false, option},
     % Various tactics, some are std Coq subsumed by ssr, for the manual purpose
@@ -497,7 +497,7 @@ There is an existing work\cite{cohen2024trocq} that could enable such transfer o
 
 \begin{figure}[H]
 \begin{lstlisting}[language=Coq]
-(* Positivity checker won't allow direct definition
+(* Rocq won't allow direct definition
    as showed in Data types a la carte:
    data Fix f = In (f (Fix f))
 *)
@@ -506,10 +506,9 @@ Axiom fix_def : forall {f : Type -> Type}, Fix f = f (Fix f).
 
 Theorem fix_implies_false : False. 
 Proof.
-    remember (Fix (fun A => A -> False)) as A.
+    remember (Fix (fun A => A -> False)) as A eqn:HeqA.
     assert (not_a : A -> False). { 
-        intros. remember X as X'. 
-        clear HeqX'.
+        intros X. assert (X' :=  X).
         rewrite HeqA in X.
         rewrite fix_def in X.
         rewrite <- HeqA in X.
