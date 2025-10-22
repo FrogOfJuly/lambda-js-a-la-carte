@@ -437,9 +437,10 @@ Theorem preservation : forall c e c' e', lc e
 
 Our ongoing Rocq mechanization is available on github \footnote{\url{https://github.com/FrogOfJuly/js-a-la-Carte}}. 
 
-Currently, out implementation includes call-by-value untyped lambda calculus core, **-style mutability, if-then-else constructions and simple error handling. 
+Currently, out implementation includes feature functors for call-by-value untyped lambda calculus core, mutability with ML-style references, if-then-else constructions and simple error handling. 
 
-\todo[inline]{Expand with functor description and interaction functors}
+Even this early in the development with such simple language, issue of feature interaction(error handling in this case) surfaces itself. It is not really clear what is the best way to deal with it except to isolate each interaction potentially exploding boilerplate code size. 
+This is not really investigated in the relevant work and it is interesting how this issue will shape our mechanization.
 
 \section{Related work}
 
