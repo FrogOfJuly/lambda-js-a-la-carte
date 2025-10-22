@@ -315,7 +315,7 @@
 In particular,
 we are interested in \emph{reactivity} in JavaScript,
 which is highly popularized in various developer frameworks
-such as React~\cite{React}, Solid~\cite{***}, and others.
+such as React~\cite{React}, Solid~\cite{Solid}, and others.
 
 \section{Background, à la Carte}
 % Inlined Functor Fixed Points
@@ -415,7 +415,7 @@ rather then developing a generic framework suitable for a wide range of target l
 %It is important to facilitate that we neither aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
 
 Recently, a significant progress~\cite{ebresafe2025certified} was made on applying modular techniques
-to mechanize the semantics of major programming languages (cf.~CompCert~\cite{***} and CakeML\cite{***}),
+to mechanize the semantics of major programming languages (cf.~CompCert~\cite{leroy2016compcert} and CakeML\cite{kumar2014cakeml}),
 but none of the existing modular approaches targets the JavaScript semantics.
 We observe that extending existing JavaScript mechanizations
 (cf., e.g.,~\cite{guha2010essence,bodin2014trusted}, which are based on various editions of the exhaustive natural language specification ECMA-262~\cite{ECMA})
@@ -438,13 +438,13 @@ while keeping the mechanization open to extension.
 With modularity, proofs about the core language
 will be reusable to mechanize the most recent additions to the language
 (i.e., the upcoming features -- even before they become part of the ECMA-262 specification).
-It will also be possible to reuse proofs to prove further properties
+It will also be possible to reuse proofs for further properties
 of the language's dialects (e.g., TypeScript),
-as well as various JavaScript frameworks (e.g., React, ***, ***).
+as well as various JavaScript frameworks (e.g., React, Solid, Angular, Vue, etc).
 
 We are particularly interested in mechanizing
-mutability, exceptions, reactivity, and asynchrony of JavaScript---%
-in light of the \emph{Signals} proposal~\cite{***},
+mutability, exceptions, asynchrony and reactivity of JavaScript---%
+in light of the \emph{Signals} proposal~\cite{signals-proposal-t39},
 which is currently being considered by the JavaScript committee.
 
 We plan to follow the $\lambda_{\texttt{JS}}$ formalization~\cite{guha2010essence},
