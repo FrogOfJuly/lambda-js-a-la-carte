@@ -300,7 +300,7 @@
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{JavaScript, formal methods, verification}
+\keywords{Language mechanization, modular proofs, JavaScript, reactivity.}
 
 % \received{20 February 2007}
 % \received[revised]{12 March 2009}
@@ -312,7 +312,12 @@
 
 \todo[inline]{Half a page for overview and explaining motivation}
 
-\section{Background à la Carte}
+In particular,
+we are interested in \emph{reactivity} in JavaScript,
+which is highly popularized in various developer frameworks
+such as React~\cite{React}, Solid~\cite{***}, and others.
+
+\section{Background, à la Carte}
 % Inlined Functor Fixed Points
 
 %- any inductive type: functor + fixpoint of that functor
@@ -340,7 +345,7 @@ is prohibitively difficult
 due to its dependency on an outdated version of Metarocq~\cite{sozeau2020metacoq}.
 
 It is possible to represent an inductive type as a fixed point of a functor,
-but attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix (forall A. A -> False)} allows to obtain proof of \texttt{False}}. 
+but attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix (forall A. A -> False)} allows to obtain proof of \texttt{False}.}. 
 Therefore, it is not possible to use explicit fixed point operations for inductive type decomposition in theorem provers.
 As shown in the Coq à la Carte approach,
 this issue can be circumvented by \emph{inlining} fixed point operations.  
@@ -349,7 +354,7 @@ which will not rely on a particular structure of the decomposed type.
 Once the desired proofs are complete,
 the type can be assembled from the desired feature functors as a fixed point of their coproduct,
 and proofs can be assembled from
-per-functors proofs,
+per-functor proofs,
 by ``closing'' recursion over them.
 
 \begin{figure}
@@ -391,28 +396,60 @@ These ideas are outlined in Figure~\ref{fig:alacart_example}.
 As can be seen in the code example,
 there is a considerable amount of boilerplate,
 and it can be automatically generated.
-Coq-Elpi~\cite{tassi2025elpi} is a rule-based metalanguage for Rocq~\cite{the_coq_development_team_2024_14542673};
+Here we mention Coq-Elpi~\cite{tassi2025elpi}, which is a rule-based metalanguage for Rocq~\cite{the_coq_development_team_2024_14542673};
 it gives a programmer an ability to generate tactics,
 inductive types and manipulate syntax with binders.
 
 \section{Targets for Mechanization}
 
-The goal of this work is to investigate how far one can go while developing extendable mechanization of JavaScript by specializing shallow a-la-carte approach. 
-It is important to facilitate that we neither aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
+In our work,
+we investigate an extensible mechanization of the JavaScript semantics\footnote{We note that mechanizing the entirety of the JavaScript semantics
+and developing a generic modular framework are non-goals.}
+by \emph{specializing} the à la carte approach described above.
+This specialization will be focused on developing meta-tools that would target an impure imperative language without concurrency (in our case, JavaScript),
+rather then developing a generic framework suitable for a wide range of target languages.
 
-There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
-There was a significant progress recently in applying modular techniques to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however none of targeted JavaScript.
+%where an extensible encoding of desired types preserves their first-class citizenship in the host langauage.
 
-Being one of the most used languages, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
-Lack of type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
-ECMA\cite{ECMA}, an extensive specification in natural language, is an established source of truth for the language semantics in natural language.
+%The goal of this work is to investigate how far one can go while developing extendable mechanization of JavaScript by specializing shallow a-la-carte approach. 
+%It is important to facilitate that we neither aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
 
-With the goal stated above in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchronicy. 
-Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeScript) that enable different styles of programming. 
-The t39\cite{t39} proposal process is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
-Ability to reuse proofs about core language for dialects and upcoming feathres would be a nice showcase of modularity. For example, it is beneficial to have a formal guarantee that reactivity as described in signals proposal\footnote{https://github.com/tc39/proposal-signals} is sound and compatible with existing reactivity implementations in React, Solid and etc.
+Recently, a significant progress~\cite{ebresafe2025certified} was made on applying modular techniques
+to mechanize the semantics of major programming languages (cf.~CompCert~\cite{***} and CakeML\cite{***}),
+but none of the existing modular approaches targets the JavaScript semantics.
+We observe that extending existing JavaScript mechanizations
+(cf., e.g.,~\cite{guha2010essence,bodin2014trusted}, which are based on various editions of the exhaustive natural language specification ECMA-262~\cite{ECMA})
+with support for new features
+is impossible without manually rewriting a significant portion of an existing codebase.
 
-We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following theorems.
+Being one of the most-used languages, JavaScript provides a fertile ground for evaluating approaches for modular reasoning:
+its lack of a type system streamlines the encoding and makes it easier to \emph{gradually} prove language properties,
+while keeping the mechanization open to extension.
+
+
+%There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
+%There was a significant progress recently in applying modular techniques to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however none of targeted JavaScript.
+
+% Being one of the most used languages, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
+% Lack of type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
+% ECMA\cite{ECMA}, an extensive specification in natural language, is an established source of truth for the language semantics in natural language.
+
+
+With modularity, proofs about the core language
+will be reusable to mechanize the most recent additions to the language
+(i.e., the upcoming features -- even before they become part of the ECMA-262 specification).
+It will also be possible to reuse proofs to prove further properties
+of the language's dialects (e.g., TypeScript),
+as well as various JavaScript frameworks (e.g., React, ***, ***).
+
+We are particularly interested in mechanizing
+mutability, exceptions, reactivity, and asynchrony of JavaScript---%
+in light of the \emph{Signals} proposal~\cite{***},
+which is currently being considered by the JavaScript committee.
+
+We plan to follow the $\lambda_{\texttt{JS}}$ formalization~\cite{guha2010essence},
+and then gradually extend it with the relevant features,
+while maintaining the following safety theorems:
 
 \begin{lstlisting}[numbers=none, language=Coq]
 Theorem progress : forall c e, lc e -> 
@@ -425,7 +462,35 @@ Theorem preservation : forall c e c' e', lc e
                                       -> lc e'.
 \end{lstlisting}
 
-Ongoing Rocq development is available here\footnote{https://github.com/FrogOfJuly/js-a-la-Carte}.
+%Modularity will enable us to reuse proofs about the core language for dialects and upcoming feathres would be a nice showcase of modularity. For example, it is beneficial to have a formal guarantee that reactivity as described in signals proposal\footnote{https://github.com/tc39/proposal-signals} is sound and compatible with existing reactivity implementations in React, Solid and etc.
+
+
+
+
+%With the goal stated above in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchrony. 
+%Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeScript) that enable different styles of programming. 
+
+%The t39\cite{t39} proposal process is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
+%Ability to reuse proofs about core language for dialects and upcoming feathres would be a nice showcase of modularity. For example, it is beneficial to have a formal guarantee that reactivity as described in signals proposal\footnote{https://github.com/tc39/proposal-signals} is sound and compatible with existing reactivity implementations in React, Solid and etc.
+
+%We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following theorems.
+
+%\begin{lstlisting}[numbers=none, language=Coq]
+%Theorem progress : forall c e, lc e -> 
+%         isValue e \/ 
+%         isError e \/ 
+%         (exists c' e', step c e c' e').
+%
+%Theorem preservation : forall c e c' e', lc e
+%                                      -> step c e c' e'
+%                                      -> lc e'.
+%\end{lstlisting}
+
+Our ongoing Rocq mechanization is available at \url{https://github.com/FrogOfJuly/js-a-la-Carte}. 
+
+Currently, out implementation includes call-by-value untyped lambda calculus core, **-style mutability, if-then-else constructions and simple error handling. 
+
+\todo[inline]{Expand with functor description and interaction functors}
 
 \section{Related work}
 
