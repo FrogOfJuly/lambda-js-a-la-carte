@@ -318,20 +318,6 @@ which is highly popularized in various developer frameworks
 such as React~\cite{React}, Solid~\cite{Solid}, and others.
 
 \section{Background, à la Carte}
-% Inlined Functor Fixed Points
-
-%- any inductive type: functor + fixpoint of that functor
-%- functor is modular, fixpoint is not modular
-%- not functor: any type -> bottom type
-%- fixpoint of not will give bottom, that's why coq agda etc. don't allow to make a fixpoint operator as in the datatypes a la carte
-
-%- everyone who is doing a la carte, are trying to avoid this pitfall
-%- coq a la carte: their way around is straightforward: we will inline it every time we need to go around
-%- by inlining they mean: see fig 1
-%- open recursion proofs, closing recursion; see fig 1
-%- boilerplate: coq-elpi instead of metarocq: because of ...
-
-
 
 \emph{Datatypes à la Carte}~\cite{swierstra2008data}
 popularizes the idea of
@@ -409,11 +395,6 @@ by \emph{specializing} the à la carte approach described above.
 This specialization will be focused on developing meta-tools that would target an impure imperative language without concurrency (in our case, JavaScript),
 rather then developing a generic framework suitable for a wide range of target languages.
 
-%where an extensible encoding of desired types preserves their first-class citizenship in the host langauage.
-
-%The goal of this work is to investigate how far one can go while developing extendable mechanization of JavaScript by specializing shallow a-la-carte approach. 
-%It is important to facilitate that we neither aiming to formalize the whole existing JavaScript semantics nor to develop a generic modular framework.
-
 Recently, a significant progress~\cite{ebresafe2025certified} was made on applying modular techniques
 to mechanize the semantics of major programming languages (cf.~CompCert~\cite{leroy2016compcert} and CakeML\cite{kumar2014cakeml}),
 but none of the existing modular approaches targets the JavaScript semantics.
@@ -425,14 +406,6 @@ is impossible without manually rewriting a significant portion of an existing co
 Being one of the most-used languages, JavaScript provides a fertile ground for evaluating approaches for modular reasoning:
 its lack of a type system streamlines the encoding and makes it easier to \emph{gradually} prove language properties,
 while keeping the mechanization open to extension.
-
-
-%There are several\cite{guha2010essence}\cite{bodin2014trusted} developments that attempt to formalize and reason about JavaScript, however non of them is easy to extend with new features.
-%There was a significant progress recently in applying modular techniques to existing programming languages(e.g. CompCert and CakeML\cite{ebresafe2025certified}), however none of targeted JavaScript.
-
-% Being one of the most used languages, JavaScript provides a fertile ground for evaluating existing approaches for modular reasoning. 
-% Lack of type system streamlines the encoding and makes it easier to gradually prove language properties, while keeping the formalization open to extension.
-% ECMA\cite{ECMA}, an extensive specification in natural language, is an established source of truth for the language semantics in natural language.
 
 
 With modularity, proofs about the core language
@@ -462,31 +435,7 @@ Theorem preservation : forall c e c' e', lc e
                                       -> lc e'.
 \end{lstlisting}
 
-%Modularity will enable us to reuse proofs about the core language for dialects and upcoming feathres would be a nice showcase of modularity. For example, it is beneficial to have a formal guarantee that reactivity as described in signals proposal\footnote{https://github.com/tc39/proposal-signals} is sound and compatible with existing reactivity implementations in React, Solid and etc.
-
-
-
-
-%With the goal stated above in mind the following features of JavaScript are of the most interest: mutability, exceptions, reactivity and asynchrony. 
-%Moreover, JavaScript has several frameworks\cite{React} and dialects(e.g. TypeScript) that enable different styles of programming. 
-
-%The t39\cite{t39} proposal process is transparent and well documented thus permitting mechanization of ongoing specification of nightly features before they are adopted into core language.
-%Ability to reuse proofs about core language for dialects and upcoming feathres would be a nice showcase of modularity. For example, it is beneficial to have a formal guarantee that reactivity as described in signals proposal\footnote{https://github.com/tc39/proposal-signals} is sound and compatible with existing reactivity implementations in React, Solid and etc.
-
-%We plan to, at first, follow $\lambda_{\texttt{JS}}$\cite{guha2010essence} formalization and then gradually extend it with features described in ECMA, while preserving the following theorems.
-
-%\begin{lstlisting}[numbers=none, language=Coq]
-%Theorem progress : forall c e, lc e -> 
-%         isValue e \/ 
-%         isError e \/ 
-%         (exists c' e', step c e c' e').
-%
-%Theorem preservation : forall c e c' e', lc e
-%                                      -> step c e c' e'
-%                                      -> lc e'.
-%\end{lstlisting}
-
-Our ongoing Rocq mechanization is available at \url{https://github.com/FrogOfJuly/js-a-la-Carte}. 
+Our ongoing Rocq mechanization is available on github \footnote{\url{https://github.com/FrogOfJuly/js-a-la-Carte}}. 
 
 Currently, out implementation includes call-by-value untyped lambda calculus core, **-style mutability, if-then-else constructions and simple error handling. 
 
@@ -526,8 +475,6 @@ While very satisfying on it's own, this approach also suffers from indirectness 
 
 \medskip
 
-% \todo[inline]{It's interesting to look into the possibility of gradually encoding calculus of inductive constructions in a modular fashion.}
-
 \section{Discussion}
 
 Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
@@ -537,8 +484,6 @@ The ideal solution would be to have a correspondence between proofs for modular 
 There is an existing work\cite{cohen2024trocq} that could enable such transfer of proofs. 
 
 \todo[inline]{Talk about how they achieve that and is it possible to leverage that for functor representation of chosen datatype.}
-
-% \todo[inline]{Is it possible to use containers as a meta language, while presreving ability to do actual reasoning with inductive types in Rocq?}
 
 
 \bibliographystyle{ACM-Reference-Format}
