@@ -329,7 +329,7 @@
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{Language mechanization, modular proofs, JavaScript, reactivity.}
+\keywords{Formal methods, modular proofs, JavaScript.}
 
 % \received{20 February 2007}
 % \received[revised]{12 March 2009}
@@ -339,7 +339,9 @@
 
 \section{Introduction}
 
-\todo[inline]{Half a page for overview and explaining motivation}
+Formalization of a language gives a single source of truth about its behavior. It is hard to ensure that one created as a human readable document is free of errors and is logically sound. Mechanization gives a guarantee that the semantics is sound and does not contain bugs. However, mechanizing formal language semantics for widely used language involves a lot of effort and requires maintenance as language evolves. Typical mechanization is monolithic\cite{??} and requires manual code rewriting when new features are introduced. This issue stems from extensibility limitations\cite{??} of inductive types that are used to model language semantics. There is a lot of research\cite{jin2023extensible, vistrup2025program, van2022intrinsically} that aims to provide a mechanism to extend them and enable proof reuse, however, practical applications of developed ideas were limited until very recently\cite{ebresafe2025certified}. 
+
+This work attempts to mitigate that shortcoming by investigating one\cite{forster2020coq} of the approaches to enable modularity for inductive types targeting JavaScript semantics\cite{ECMA}. Starting with untyped lambda calculus we plan to follow lambda-js\cite{guha2010essence} at first and later extend it with features described in ECMA. This will give a proof of concept that it is possible to reason about modern heavily used language in modular fashion and later reuse developed tools to maintain mechanization as new features are added. 
 
 In particular,
 we are interested in \emph{reactivity} in JavaScript,
@@ -367,7 +369,7 @@ this issue can be circumvented by \emph{inlining} fixed point operations.
 Resulting functors will then allow open-recursion-style per-functor proofs,
 which will not rely on a particular structure of the decomposed type.
 Once the desired proofs are complete,
-the type can be assembled from the desired feature functors as a fixed point of their coproduct,
+the type can be assembled from the corresponding feature functors as a fixed point of their coproduct,
 and proofs can be assembled from
 per-functor proofs,
 by ``closing'' recursion over them.
@@ -413,7 +415,7 @@ there is a considerable amount of boilerplate,
 and it can be automatically generated.
 Here we mention Coq-Elpi~\cite{tassi2025elpi}, which is a rule-based metalanguage for Rocq~\cite{the_coq_development_team_2024_14542673};
 it gives a programmer an ability to generate tactics,
-inductive types and manipulate syntax with binders.
+inductive types and manipulate Rocq syntax with binders.
 
 \section{Targets for Mechanization}
 
@@ -432,22 +434,25 @@ We observe that extending existing JavaScript mechanizations
 with support for new features
 is impossible without manually rewriting a significant portion of an existing codebase.
 
+% Maybe this and next paragraphs should go to introduction?
+
 Being one of the most-used languages, JavaScript provides a fertile ground for evaluating approaches for modular reasoning:
 its lack of a type system streamlines the encoding and makes it easier to \emph{gradually} prove language properties,
 while keeping the mechanization open to extension.
-
 
 With modularity, proofs about the core language
 will be reusable to mechanize the most recent additions to the language
 (i.e., the upcoming features -- even before they become part of the ECMA-262 specification).
 It will also be possible to reuse proofs for further properties
-of the language's dialects (e.g., TypeScript),
-as well as various JavaScript frameworks (e.g., React, Solid, Angular, Vue, etc).
+of the language's dialects (e.g., JavaScript XML, TypeScript),
+as well as various JavaScript frameworks \textcolor{red}{(e.g., React, Solid, Angular, Vue, etc)}.
 
 We are particularly interested in mechanizing
 mutability, exceptions, asynchrony and reactivity of JavaScript---%
 in light of the \emph{Signals} proposal~\cite{signals-proposal-t39},
 which is currently being considered by the JavaScript committee.
+
+\todo[inline]{Why we are interested in that?}
 
 We plan to follow the $\lambda_{\texttt{JS}}$ formalization~\cite{guha2010essence},
 and then gradually extend it with the relevant features,
@@ -467,7 +472,12 @@ Theorem preservation : forall c e c' e', lc e
 Our ongoing Rocq mechanization is available at
 \url{https://github.com/FrogOfJuly/js-a-la-Carte}. 
 The implementation includes feature functors for: call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling.
-\textcolor{red}{Even this early in the development with such simple language, feature interaction(error handling in this case) requires isolation.} To the best of our knowledge, feature interactions has not been previously investigated, and it is interesting to see how this issue will shape our mechanization.
+
+\todo[inline]{The in-text url is so ugly though... :( }
+
+\textcolor{red}{Even this early in the development with such simple language, interaction between error handling functor and the rest the langauge requires isolation.} To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how this issue will shape our mechanization.
+
+
 
 \section{Related work}
 
@@ -508,10 +518,7 @@ While very satisfying on it's own, this approach also suffers from indirectness 
 Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
 Even if in case of Coq à la Carte the departure is not quite dramatic, it still requires to rethink how one approaches proofs.
 
-The ideal solution would be to have a correspondence between proofs for modular representation and equivalent inductive types. 
-There is an existing work\cite{cohen2024trocq} that could enable such transfer of proofs. 
-
-\todo[inline]{Talk about how they achieve that and is it possible to leverage that for functor representation of chosen datatype.}
+The ideal solution would be to have a correspondence between proofs for modular representation and equivalent inductive types. There is an existing work\cite{cohen2024trocq} that enables such transfer. Modular encoding of the language is isomorphic to its monolithic counterpart, so there should be no obstacles exposing more familiar interface for those uses that do not benefit from modularity.
 
 
 \bibliographystyle{ACM-Reference-Format}
@@ -526,6 +533,7 @@ There is an existing work\cite{cohen2024trocq} that could enable such transfer o
 (* Rocq won't allow direct definition
    as showed in Data types a la carte:
    data Fix f = In (f (Fix f))
+   so we mimic it with axioms.
 *)
 Axiom Fix : (Type -> Type) -> Type.
 Axiom fix_def : forall {f : Type -> Type}, Fix f = f (Fix f).
@@ -547,7 +555,7 @@ Proof.
     exact not_a.
 Qed.
 \end{lstlisting}
-\caption{\texttt{Fix} existence implies falsehood.}
+\caption{\texttt{Fix} implies falsehood.}
   \label{appendix:false_proof}
 \end{figure}
 
