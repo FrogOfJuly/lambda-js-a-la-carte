@@ -44,7 +44,7 @@
 %% for your publication.
 %%
 %%
-\documentclass[sigplan,nonacm]{acmart}
+\documentclass[sigplan,nonacm,review]{acmart}
 
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
@@ -168,7 +168,7 @@
         induction, using, refine, inversion, injection, rewrite, congr,
         unlock, compute, ring, field, fourier, replace, fold, unfold,
         change, cutrewrite, simpl, have, suff, wlog, suffices, without,
-        loss, nat_norm, assert, cut, trivial, revert, bool_congr, nat_congr,
+        loss, nat_norm, assert, remember, cut, trivial, revert, bool_congr, nat_congr,
         symmetry, transitivity, auto, split, left, right, autorewrite},
     % Terminators
     morekeywords=[5]{by, done, exact, reflexivity, tauto, romega, omega,
@@ -277,9 +277,9 @@
   \city{Bergen}
   \country{Norway}
 }
-\authornote{
-  Secondary supervisor
-}
+% \authornote{
+%   Secondary supervisor.
+% }
 
 \author{Jaakko Järvi}
 \email{jaakko.jarvi@utu.fi}
@@ -290,9 +290,9 @@
   \country{Finland}
 }
 
-\authornote{
-  Primary supervisor
-}
+% \authornote{
+%   Primary supervisor.
+% }
 
 
 
@@ -339,46 +339,58 @@
 
 \section{Introduction}
 
-Formalization of a language gives a single source of truth about its behavior. It is hard to ensure that one created as a human readable document is free of errors and is logically sound. Mechanization gives a guarantee that the semantics is sound and does not contain bugs. However, mechanizing formal language semantics for widely used language involves a lot of effort and requires maintenance as language evolves. Typical mechanization is monolithic\cite{??} and requires manual code rewriting when new features are introduced. This issue stems from extensibility limitations\cite{??} of inductive types that are used to model language semantics. There is a lot of research\cite{jin2023extensible, vistrup2025program, van2022intrinsically} that aims to provide a mechanism to extend them and enable proof reuse, however, practical applications of developed ideas were limited until very recently\cite{ebresafe2025certified}. 
+A programming language formalization gives a single source of truth
+about the language behavior.
+Unless mechanized,
+a formalization can be erroneous and logically unsound.
+Mechanizing a formalization can guarantee that
+the semantics of the language is sound,
+and that
+the formalization is free of bugs.
+For a complex language, however,
+mechanization is laborious,
+as is maintaining an existing mechanization as the language evolves. Mechanizations are usually monolithic
+such that each new feature requires manually rewriting existing code.
+At its core this is due to the manifestation of the expression problem for inductive types. 
+% This issue stems from the extensibility limitations of inductive types that are used to model language semantics, with the expression problem at the core. 
 
-This work attempts to mitigate that shortcoming by investigating one\cite{forster2020coq} of the approaches to enable modularity for inductive types targeting JavaScript semantics\cite{ECMA}. Starting with untyped lambda calculus we plan to follow lambda-js\cite{guha2010essence} at first and later extend it with features described in ECMA. This will give a proof of concept that it is possible to reason about modern heavily used language in modular fashion and later reuse developed tools to maintain mechanization as new features are added. 
+Several solutions~\cite{jin2023extensible, vistrup2025program, van2022intrinsically, forster2020coq} have been proposed to improve proof reuse in mechanizations, and some~\cite{ebresafe2025certified} have found use in practice (cf.~CompCert~\cite{leroy2016compcert} and CakeML~\cite{kumar2014cakeml}). Our work targets JavaScript semantics with one these approaches, specializing \emph{Coq à la Carte}~\cite{forster2020coq}. We aim to show that it is possible to reason about modern heavily used languages in an modular fashion keeping mechanization open to extension with new features. 
 
-In particular,
-we are interested in \emph{reactivity} in JavaScript,
-which is highly popularized in various developer frameworks
-such as React~\cite{React}, Solid~\cite{Solid}, and others.
 
-\section{Background, à la Carte}
+% We are especially interested in mechanizing \emph{reactivity} in JavaScript,
+% which is popularized by various developer frameworks
+% such as React~\cite{React}, Solid~\cite{Solid}, and others.
+
+\section{Background}
 
 \emph{Datatypes à la Carte}~\cite{swierstra2008data}
 popularizes the idea of
 \emph{extensible} inductive datatypes. 
-One of the efforts to bring this idea to proof assistants
-was done by \emph{Coq à la Carte}~\cite{forster2020coq},
-which enables modularity in proofs.
+One effort to bring this idea to proof assistants
+was \emph{Coq à la Carte}~\cite{forster2020coq},
+which enables modularity in Rocq~\cite{the_coq_development_team_2024_14542673} proofs.
 However,
-directly adopting the implementation~\cite{forster2020coq} in practice
+directly using tools developed there
 is prohibitively difficult
-due to its dependency on an outdated version of Metarocq~\cite{sozeau2020metacoq}.
+due to their dependency on an outdated version of Metarocq~\cite{sozeau2020metacoq}.
 
-It is possible to represent an inductive type as a fixed point of a functor,
-but attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix ($\Lambda$ A. A -> False)} allows to obtain proof of \texttt{False}. See appendix Figure \ref{appendix:false_proof}}. 
-Therefore, it is not possible to use explicit fixed point operations for inductive type decomposition in theorem provers.
+The key insight to extensibility is that it is possible to represent an inductive type as a fixed point of a particular functor. Unfortunately, attempting such a decomposition na\"ively leads to inconsistency\footnote{\texttt{Fix ($\Lambda$ A. A -> False)} allows to obtain proof of \texttt{False}. See appendix Figure \ref{appendix:false_proof}}. 
+Therefore, it is not possible to use explicit fixed-point operations for inductive type decomposition in theorem provers.
 As shown in the Coq à la Carte approach,
-this issue can be circumvented by \emph{inlining} fixed point operations.  
+this issue can be avoided by \emph{inlining} fixed-point operations.  
 Resulting functors will then allow open-recursion-style per-functor proofs,
 which will not rely on a particular structure of the decomposed type.
 Once the desired proofs are complete,
 the type can be assembled from the corresponding feature functors as a fixed point of their coproduct,
 and proofs can be assembled from
 per-functor proofs,
-by ``closing'' recursion over them.
+by ``closing'' recursion over them. These ideas are outlined in Figure~\ref{fig:alacart_example}.
 
 \begin{figure}
 \begin{lstlisting}[language=Coq]
 (* Exp.v *)
 Inductive Exp := 
-(* Exp type can be seen as inlined fixed point 
+(* Exp type can be seen as an inlined fixed point 
    of coproduct of feature functors exp_ite and exp_lam *)
   | inj_ite : exp_ite Exp -> Exp
   | inj_lam : exp_lam Exp -> Exp.
@@ -399,63 +411,57 @@ Variable thrm : forall (e : Exp) -> ... .
 (* Prove corresponding per-functor property *)
 Definition thrm_ite : forall (e : exp_lam) -> ... .
 End exp_ite.
-(* Lambda.v: ommited, similar to ITE.v *)
+(* Lambda.v: omitted, similar to ITE.v *)
 \end{lstlisting}
-  \caption{Minimal example of language extension with ITE constructions.}
+  \caption{Minimal example of language extension with ITE constructions. There is much more to it, for details, please refer to our development.}
   \label{fig:alacart_example}
 \end{figure}
 
-These ideas are outlined in Figure~\ref{fig:alacart_example}.
-%The apporach is illustrated with an example at Fig \ref{fig:alacart_example} 
-%that roughtly outlines extension of untyped lambda calculus with with booleans 
+There is another 
+
+
+%The approach is illustrated with an example at Fig \ref{fig:alacart_example} 
+%that roughly outlines extension of untyped lambda calculus with booleans 
 %and if-then-else constructions. 
-%However, there is much more to it that is possible to cover here.
+%However, there is much more to it than is possible to cover here.
 As can be seen in the code example,
 there is a considerable amount of boilerplate,
 and it can be automatically generated.
-Here we mention Coq-Elpi~\cite{tassi2025elpi}, which is a rule-based metalanguage for Rocq~\cite{the_coq_development_team_2024_14542673};
-it gives a programmer an ability to generate tactics,
-inductive types and manipulate Rocq syntax with binders.
+Here we mention Coq-Elpi~\cite{tassi2025elpi}, which is a rule-based metalanguage for Rocq;
+it gives a programmer the ability to generate tactics,
+inductive types and manipulate Rocq terms.
 
 \section{Targets for Mechanization}
 
-In our work,
-we investigate an extensible mechanization of the JavaScript semantics\footnote{We note that mechanizing the entirety of the JavaScript semantics
-and developing a generic modular framework are non-goals.}
-by \emph{specializing} the à la carte approach described above.
-This specialization will be focused on developing meta-tools that would target an impure imperative language without concurrency (in our case, JavaScript),
-rather then developing a generic framework suitable for a wide range of target languages.
+% In our work,
+% we attempt an extensible mechanization of the JavaScript semantics\footnote{We note that mechanizing the entirety of the JavaScript semantics
+% and developing a generic modular framework are non-goals.}
+% by \emph{specializing} the à la carte approach described above.
+% This specialization will be focused on developing meta-tools that target an impure imperative language without concurrency (in our case, JavaScript),
+% rather than developing a generic framework suitable for a wide range of target languages.
 
-Recently, a significant progress~\cite{ebresafe2025certified} was made on applying modular techniques
-to mechanize the semantics of major programming languages (cf.~CompCert~\cite{leroy2016compcert} and CakeML\cite{kumar2014cakeml}),
-but none of the existing modular approaches targets the JavaScript semantics.
+None of the existing modular approaches targets JavaScript semantics.
 We observe that extending existing JavaScript mechanizations
 (cf., e.g.,~\cite{guha2010essence,bodin2014trusted}, which are based on various editions of the exhaustive natural language specification ECMA-262~\cite{ECMA})
 with support for new features
 is impossible without manually rewriting a significant portion of an existing codebase.
 
-% Maybe this and next paragraphs should go to introduction?
+% Maybe this and next paragraphs should go to the introduction?
 
-Being one of the most-used languages, JavaScript provides a fertile ground for evaluating approaches for modular reasoning:
-its lack of a type system streamlines the encoding and makes it easier to \emph{gradually} prove language properties,
-while keeping the mechanization open to extension.
+Being one of the most-used languages, JavaScript provides a fertile ground for evaluating approaches for modular reasoning.
+Lack of a type system streamlines the encoding, while the ability to reuse proofs makes it practical to mechanize dialects (e.g. JSX, TypeScript), reason about various frameworks(e.g. React~\cite{React}, Solid~\cite{Solid}, etc) and verify feature specifications while they are still in development. 
 
-With modularity, proofs about the core language
-will be reusable to mechanize the most recent additions to the language
-(i.e., the upcoming features -- even before they become part of the ECMA-262 specification).
-It will also be possible to reuse proofs for further properties
-of the language's dialects (e.g., JavaScript XML, TypeScript),
-as well as various JavaScript frameworks \textcolor{red}{(e.g., React, Solid, Angular, Vue, etc)}.
+% Being extensible, proofs about the core language
+% will be reusable to mechanize the most recent additions to the language
+% (i.e., the upcoming features -- even before they become part of the ECMA-262 specification).
+% It will also be possible to reuse proofs for further properties
+% of the language's dialects (e.g., JavaScript XML, TypeScript),
+% as well as various JavaScript frameworks.
 
-We are particularly interested in mechanizing
-mutability, exceptions, asynchrony and reactivity of JavaScript---%
-in light of the \emph{Signals} proposal~\cite{signals-proposal-t39},
-which is currently being considered by the JavaScript committee.
-
-\todo[inline]{Why we are interested in that?}
+% \textcolor{red}{(e.g., React, Solid, Angular, Vue, etc)}.
 
 We plan to follow the $\lambda_{\texttt{JS}}$ formalization~\cite{guha2010essence},
-and then gradually extend it with the relevant features,
+and then extend it with the relevant features one-by-one,
 while maintaining the following safety theorems:
 
 \begin{lstlisting}[numbers=none, language=Coq]
@@ -469,56 +475,62 @@ Theorem preservation : forall c e c' e', lc e
                                       -> lc e'.
 \end{lstlisting}
 
-Our ongoing Rocq mechanization is available at
-\url{https://github.com/FrogOfJuly/js-a-la-Carte}. 
-The implementation includes feature functors for: call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling.
-
-\todo[inline]{The in-text url is so ugly though... :( }
-
-\textcolor{red}{Even this early in the development with such simple language, interaction between error handling functor and the rest the langauge requires isolation.} To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how this issue will shape our mechanization.
+We are particularly interested in mechanizing
+mutability, exceptions, asynchrony, and reactivity of JavaScript, and we seek to establish soundness of the TC39 \emph{Signals} proposal~\cite{signals-proposal-t39} that unifies reactive primitives across various developer frameworks. 
 
 
+
+Our ongoing Rocq mechanization is available on
+GitHub\footnote{\url{https://github.com/FrogOfJuly/js-a-la-Carte}}. 
+The development includes feature functors for: call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling that interacts with ITE, mutability and the core.
+
+To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how they will shape our mechanization.
 
 \section{Related work}
 
-There are other solutions to increase modularity of proofs. 
+There are other solutions that address the extensibility of proofs. 
 
-\medskip
+% \medskip
 
-\textbf{Extensible metatheory mechanization via family polymorphism. } FPOP\cite{jin2023extensible} and Rocqet\cite{ebresafe2025certified} are a Rocq language extensions which compile modular inductive types into Rocq modules allowing extension with the help of 
-OO-inspired family polymorphism with late bindings. 
+\paragraph{Extensible metatheory mechanization via family polymorphism} FPOP~\cite{jin2023extensible} and Rocqet~\cite{ebresafe2025certified} are Rocq language extensions that compile inductive types into Rocq modules, allowing extensibility with the help of OO-inspired family polymorphism with late bindings. 
+%
+%
+%
+%
+Despite its success in formalizing CompCert and CakeML, its extensible inductive type representation as Rocq modules is virtually incompatible with usual inductive types, which worsens the learning curve and locks development to this particular dialect. 
+% \todo[inline]{Am I misinterpreting all of this, and it's OK and actually the best solution?}
 
-Despite its success in formalizing CompCert and CakeML its modular type representation as modules is virtually incompatible with the rest of Rocq which increases learning curve and locks development to this particular dialect. 
-\todo[inline]{Am I misinterpreting all of this and it's OK and actually the best solution?}
+% \medskip
+\paragraph{Program Logics à la Carte}
+Vistrup et al.~\cite{vistrup2025program} achieve extensibility by encoding effect-emitting
+(e.g., non-termination, exception, concurrency, etc.)
+components of the language as fragments of program logic. 
+Language semantics is expressed as interaction trees~\cite{xia2019interaction}: a coinductively defined datatype for representing effectful computations. 
+Development provides several program logic fragments that correspond to commonly encountered pieces in different programming languages. 
+%
+%
+%
+%
+From the practical point of view, however, this approach introduces considerable indirection to language encoding and proofs, especially if it is required to define new program logic fragments.
 
-\medskip
-\textbf{Program Logics à la Carte}\cite{vistrup2025program} achieves modularity by encoding effect-emitting(e.g. non-termination, exception, concurrency, etc.) components of the language as fragments of program logic. 
-Language semantics is expressed as interaction trees\cite{xia2019interaction}: coinductively defined datatype for representing effectful computations. 
-Development provides several program logics fragment which correspond to commonly encountered pieces in different programming languages. 
-
-From the practical point of view however, this approach introduces considerable indirection to encoding and proofs, especially if it is required to define new program logic fragments.
-
-\todo[inline]{Does it?}
-
-
-\medskip
-\textbf{Intrinsically-typed definitional interpreters {\`a} la carte}\cite{van2022intrinsically} leverages finatary containers\cite{altenkirch2015indexed} and algebras over them to introduce "intrinsically-typed language fragments".
+% \medskip
+\paragraph{Intrinsically-typed definitional interpreters {\`a} la carte}
+Van der Rest et al.~\cite{van2022intrinsically} leverage finitary containers~\cite{altenkirch2015indexed} and algebras over them to introduce "intrinsically-typed language fragments".
 Those bring together common syntax and semantics of chosen language features, while allowing composition. 
+%
+%
+%
+%
+While very satisfying on its own, this approach also suffers from the indirectness of type encoding. Learning curve for container machinery is quite steep, which makes it difficult to adopt the approach to larger languages.
 
-While very satisfying on it's own, this approach also suffers from indirectness of modular type encoding. Learning curve for container machinery is quite steep and thus makes it hard to adopt for proofs about larger languages.
-
-
-
-\todo[inline]{Should be worded better.}
-
-\medskip
+% \medskip
 
 \section{Discussion}
 
 Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
-Even if in case of Coq à la Carte the departure is not quite dramatic, it still requires to rethink how one approaches proofs.
+In the case of Coq à la Carte, the departure is not quite dramatic, but it still requires to rethink how one approaches proofs.
 
-The ideal solution would be to have a correspondence between proofs for modular representation and equivalent inductive types. There is an existing work\cite{cohen2024trocq} that enables such transfer. Modular encoding of the language is isomorphic to its monolithic counterpart, so there should be no obstacles exposing more familiar interface for those uses that do not benefit from modularity.
+The ideal solution would be to have a correspondence between proofs for modular representation and equivalent inductive types. Trocq~\cite{cohen2024trocq} enables such transfer. Modular encoding of the language is isomorphic to its monolithic counterpart, so there should be no obstacles to exposing a more familiar interface for those uses that do not benefit from extensibility.
 
 
 \bibliographystyle{ACM-Reference-Format}
@@ -555,7 +567,7 @@ Proof.
     exact not_a.
 Qed.
 \end{lstlisting}
-\caption{\texttt{Fix} implies falsehood.}
+\caption{\texttt{Fix} is inconsistent}
   \label{appendix:false_proof}
 \end{figure}
 
