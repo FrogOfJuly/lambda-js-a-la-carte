@@ -401,8 +401,10 @@ Section exp_ite.
 (* assume that property holds 
    for the rest of the language *)
   Variable thrm : forall (e : Exp) -> P e.
+(* assume P-related retract for exp_ite *)
+  Variable P_retracted : forall e, P (inj e) -> P_ite (inj e).
 (* Prove corresponding per-functor property *)
-  Definition thrm_ite : forall (e : exp_ite) -> P e.
+  Definition thrm_ite : forall (e : Exp) -> P_ite e.
 End exp_ite.
 (* Lambda.v: omitted, similar to ITE.v *)
 (* Exp.v *)
@@ -411,15 +413,17 @@ Inductive Exp :=
    of coproduct of feature functors exp_ite and exp_lam *)
   | inj_ite : exp_ite Exp -> Exp
   | inj_lam : exp_lam Exp -> Exp.
-(* prove tight retracts for feature functors *)
+(* prove retracts *)
 Instance r_exp_exp_lam : retract (exp_lam exp) exp := { ... }
 Instance r_exp_exp_ite : retract (exp_ite exp) exp := { ... }
+Definition P_retr_ite : forall (e : exp_ite), P (inj e) -> ...
+Definition P_retr_lam : forall (e : exp_lam), P (inj e) -> ...
 (* desired langugae property *)
 Fixpoint thrm : forall (e : Exp) -> P e.
-intros. destruct e.
-(* close recursion *)
-  - apply (thrm_ite Exp thrm ...).
-  - apply (thrm_lam Exp thrm ...).
+Proof. intros. relevant_inversion; subst.
+(* close recursion ----v *)
+  - apply (thrm_ite Exp thrm P_retr_ite ...).
+  - apply (thrm_lam Exp thrm P_retr_lam ...).
 Defined.
 \end{lstlisting}
   \caption{Minimal example of language \texttt{Exp} extended with \texttt{ITE} constructions. }
