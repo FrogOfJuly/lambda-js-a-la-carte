@@ -461,8 +461,7 @@ is impossible without manually rewriting a significant portion of the mechanizat
 
 % Maybe this and next paragraphs should go to the introduction?
 
-JavaScript is one of the most-used programming languages, it evolves fast, and there is a community maintaining its standard specification. 
-JavaScript is thus an interesting and practically relevant test case for evaluating approaches for modular reasoning. The need for proof reuse and extensibility is evident, if one desires to tackle the language's many dialects (e.g. JSX, TypeScript), reason about various frameworks (e.g. React~\cite{React}, Solid~\cite{Solid}, etc.), and verify feature specifications while they are still in development. 
+JavaScript is one of the most-used programming languages, it evolves fast, and has an actively maintained standard specification. JavaScript is thus an interesting and practically relevant test case for evaluating approaches for modular reasoning. The need for proof reuse and extensibility is evident, if one desires to tackle the language's many dialects (e.g. JSX, TypeScript), reason about various frameworks (e.g. React~\cite{React}, Solid~\cite{Solid}, etc.), and verify feature specifications while they are still in development. 
 
 % Being extensible, proofs about the core language
 % will be reusable to mechanize the most recent additions to the language
@@ -495,9 +494,7 @@ mutability, exceptions, asynchrony, and reactivity of JavaScript, and we seek to
 
 Our ongoing Rocq mechanization is available on
 GitHub\footnote{\url{https://github.com/FrogOfJuly/js-a-la-Carte}}. 
-The development includes feature functors for: call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling that interacts with ITE, mutability, and the core.
-
-To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how they will shape our mechanization.
+The development includes feature functors for call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling that interacts with the core, mutability, and ITE. To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how they will shape our mechanization.
 
 \section{Related work}
 
@@ -536,14 +533,13 @@ Those bring together common syntax and semantics of chosen language features, wh
 %
 While very satisfying on its own, this approach also suffers from the indirectness of type encoding. Learning curve for container machinery is quite steep, which makes it difficult to adopt the approach to larger languages.
 
-% \medskip
+\todo[inline]{Talk about recent mechanizations that reject modularity: \cite{rao2025progressful, seassau2025formal}}
 
 \section{Discussion}
 
-Proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. 
-In the case of Coq à la Carte, the departure is not quite dramatic, but it still requires rethinking how one approaches proofs.
+In all the techniques discussed above, proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. In the case of Coq à la Carte, and consequently in our work, the departure is not quite dramatic, but it is still makes proofs less intuitive.
 
-The ideal solution would be to have a correspondence between proofs for modular representation and equivalent inductive types. Trocq~\cite{cohen2024trocq} enables such transfer. Modular encoding of the language is isomorphic to its monolithic counterpart, so there should be no obstacles to exposing a more familiar interface for those uses that do not benefit from extensibility.
+A promising way forward would be to establish a correspondence between proofs based on our modular representation and the equivalent monolithic proofs, and implement a transfer mechanism between them. Trocq~\cite{cohen2024trocq} is a recently developed tool that we expect to enable this transfer automatically. If we are successful, we can expose a familiar interface for those uses that do not require extensibility.
 
 
 \bibliographystyle{ACM-Reference-Format}
