@@ -476,6 +476,8 @@ We plan to follow the $\lambda_{\texttt{JS}}$ formalization~\cite{guha2010essenc
 and then extend it with the relevant features one by one,
 while maintaining the following safety theorems:
 
+\todo[inline]{Look at OLang\cite{seassau2025formal} and Wasm\cite{rao2025progressful} for more useful properties}
+
 \begin{lstlisting}[numbers=none, language=Coq]
 Theorem progress : forall c e, lc e -> 
          isValue e \/ 
