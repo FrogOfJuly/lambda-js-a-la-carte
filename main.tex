@@ -585,7 +585,7 @@ Qed.
 
 \begin{figure}[H]
 \begin{lstlisting}[language=Coq]
-Class retract X Y :=
+Class tight_retract X Y :=
   {
     retract_I : X -> Y ;
     retract_R : Y -> option X;
@@ -594,6 +594,8 @@ Class retract X Y :=
     retract_tight : 
         forall x y, retract_R y = Some x -> retract_I x = y
   }.
+
+Notation retract F T := (retract (F T) T)%type.
 \end{lstlisting}
 \caption{Tight retract definition.}
   \label{appendix:tight_retract}
