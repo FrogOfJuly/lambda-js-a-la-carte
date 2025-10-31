@@ -476,14 +476,13 @@ We plan to follow the $\lambda_{\texttt{JS}}$ formalization~\cite{guha2010essenc
 and then extend it with the relevant features one by one,
 while maintaining the following safety theorems:
 
-\todo[inline]{Look at OLang\cite{seassau2025formal} and Wasm\cite{rao2025progressful} for more useful properties}
-
 \begin{lstlisting}[numbers=none, language=Coq]
 Theorem progress : forall c e, lc e -> 
          isValue e \/ 
          isError e \/ 
          (exists c' e', step c e c' e').
-
+(* JavaScript is untyped, so preservation-like 
+   property is weak. *)
 Theorem preservation : forall c e c' e', lc e
                                       -> step c e c' e'
                                       -> lc e'.
@@ -517,13 +516,13 @@ Despite its success in formalizing CompCert and CakeML, its extensible inductive
 Vistrup et al.~\cite{vistrup2025program} achieve extensibility by encoding effect-emitting
 (e.g., non-termination, exception, concurrency, etc.)
 components of the language as fragments of program logic. 
-Language semantics is expressed as interaction trees~\cite{xia2019interaction}: a coinductively defined datatype for representing effectful computations. 
-Development provides several program logic fragments that correspond to commonly encountered pieces in different programming languages. 
+Language semantics is expressed as interaction trees~\cite{xia2019interaction}: a coinductive version of "freeer monads"~\cite{kiselyov2015freer} representing composable effectful computations. 
+This development provides several program logic fragments that correspond to commonly encountered pieces in different programming languages. 
 %
 %
 %
 %
-From the practical point of view, however, this approach introduces considerable indirection to language encoding and proofs, especially if it is required to define new program logic fragments.
+From the practical point of view, however, this approach introduces considerable indirection to language encoding and proofs, especially if one needs to define new program logic fragments. It should be noted that ITree's by themselves enjoy adoption, e.g. Vellvm~\cite{zhao2012formalizing} project aiming for LLVM verification.
 
 % \medskip
 \paragraph{Intrinsically-typed definitional interpreters {\`a} la carte}
@@ -533,13 +532,13 @@ Those bring together common syntax and semantics of chosen language features, wh
 %
 %
 %
-While very satisfying on its own, this approach also suffers from the indirectness of type encoding. Learning curve for container machinery is quite steep, which makes it difficult to adopt the approach to larger languages.
-
-\todo[inline]{Talk about recent mechanizations that reject modularity: \cite{rao2025progressful, seassau2025formal}}
+While satisfying on its own, this approach also suffers from the indirectness of type encoding. 
 
 \section{Discussion}
 
-In all the techniques discussed above, proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. In the case of Coq à la Carte, and consequently in our work, the departure is not quite dramatic, but it is still makes proofs less intuitive.
+Recently, several language formalization projects considered adopting modularity in their mechanizations, but ultimately opted out of it. The ongoing WebAssembly mechanization~\cite{rao2025progressful} cites that one of the roadblocks is to preserve correspondence with the human readable specification~\cite{wasm spec}. The OCaml~\cite{brucker2018formal} mechansization cites ITree's limitations as the reason for sticking with a monolithic encoding.
+
+Indeed, in all the techniques discussed above, proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. In the case of Coq à la Carte, and consequently in our work, the departure is not quite dramatic, but it is still makes proofs less intuitive. 
 
 A promising way forward would be to establish a correspondence between proofs based on our modular representation and the equivalent monolithic proofs, and implement a transfer mechanism between them. Trocq~\cite{cohen2024trocq} is a recently developed tool that we expect to enable this transfer automatically. If we are successful, we can expose a familiar interface for those uses that do not require extensibility.
 
