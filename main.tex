@@ -390,7 +390,7 @@ by ``closing'' recursion over them. These ideas are outlined in Figure~\ref{fig:
 \begin{lstlisting}[language=Coq]
 (* ITE.v *)
 Section exp_ite.
-(* assume existance of overarching type *)
+(* assume existence of overarching type *)
   Variable Exp : Type.
 (* define feature functor *)
   Inductive exp_ite := 
@@ -405,7 +405,7 @@ Section exp_ite.
   Variable P_retracted : forall e, P (inj e) -> P_ite (inj e).
 (* Prove corresponding per-functor property *)
   Definition thrm_ite : forall (e : Exp) -> P_ite e.
-End exp_ite.
+End exp_ite.      (* defined in section --^ *)
 (* Lambda.v: omitted, similar to ITE.v *)
 (* Exp.v *)
 Inductive Exp := 
@@ -418,7 +418,7 @@ Instance r_exp_exp_lam : retract (exp_lam exp) exp := { ... }
 Instance r_exp_exp_ite : retract (exp_ite exp) exp := { ... }
 Definition P_retr_ite : forall (e : exp_ite), P (inj e) -> ...
 Definition P_retr_lam : forall (e : exp_lam), P (inj e) -> ...
-(* desired langugae property *)
+(* desired language property.   v-- defined globally *)
 Fixpoint thrm : forall (e : Exp) -> P e.
 Proof. intros. relevant_inversion; subst.
 (* close recursion ----v *)
@@ -426,7 +426,8 @@ Proof. intros. relevant_inversion; subst.
   - apply (thrm_lam Exp thrm P_retr_lam ...).
 Defined.
 \end{lstlisting}
-  \caption{Minimal example of language \texttt{Exp} extended with \texttt{ITE} constructions. }
+  \caption{Minimal example of language \texttt{Exp} extended with \texttt{ITE} constructions. 
+  }
   \label{fig:alacart_example}
 \end{figure}
 
@@ -484,9 +485,8 @@ Theorem progress : forall c e, lc e ->
          (exists c' e', step c e c' e').
 (* JavaScript is untyped, so preservation-like 
    property is weak. *)
-Theorem preservation : forall c e c' e', lc e
-                                      -> step c e c' e'
-                                      -> lc e'.
+Theorem preservation : 
+    forall c e c' e', lc e -> step c e c' e' -> lc e'.
 \end{lstlisting}
 
 We are particularly interested in mechanizing
@@ -496,7 +496,7 @@ mutability, exceptions, asynchrony, and reactivity of JavaScript, and we seek to
 
 Our ongoing Rocq mechanization is available on
 GitHub\footnote{\url{https://github.com/FrogOfJuly/js-a-la-Carte}}. 
-The development includes feature functors for call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling that interacts with the core, mutability, and ITE. To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how they will shape our mechanization.
+The development includes feature functors for call-by-value untyped lambda calculus core, mutability with ML-style references, \texttt{if}-\texttt{then}-\texttt{else} constructions, as well as simple error handling that interacts with the core, mutability, and ITE. To the best of our knowledge, feature functor interactions have not been previously investigated, and it is interesting to see how they will shape our mechanization. It also contains limited Coq-Elpi meta-tooling for boilerplate automation.
 
 \section{Related work}
 
@@ -509,7 +509,7 @@ There are other solutions that address proof extensibility.
 %
 %
 %
-Despite its success in formalizing CompCert and CakeML, its extensible inductive type representation is not easily compatible with plain Rocq inductive types due to their parametrization within modules. This effectively locks development to this particular dialect of Rocq, which can be undesirable.
+Despite its success in formalizing CompCert and CakeML, its extensible inductive type representation is not easily compatible with plain Rocq inductive types due to their parametrization within modules. This locks development to this particular dialect of Rocq, which can be undesirable.
 % \todo[inline]{Am I misinterpreting all of this, and it's OK and actually the best solution?}
 
 % \medskip
@@ -537,7 +537,7 @@ While satisfying on its own, this approach also suffers from the indirectness of
 
 \section{Discussion}
 
-Recently, several language formalization projects considered adopting modularity in their mechanizations, but ultimately opted out of it. The ongoing WebAssembly mechanization~\cite{rao2025progressful} cites that one of the roadblocks is to preserve correspondence with the human-readable specification~\cite{WebAssemblyCoreSpecification1}. The OCaml~\cite{brucker2018formal} mechansization cites ITree's limitations as the reason for sticking with a monolithic encoding.
+Recently, several language formalization projects considered adopting modularity in their mechanizations, but ultimately opted out of it. The ongoing WebAssembly mechanization~\cite{rao2025progressful} cites that one of the roadblocks is to preserve correspondence with the human-readable specification~\cite{WebAssemblyCoreSpecification1}. The OCaml~\cite{seassau2025formal} mechanization cites ITree's limitations as the reason for sticking with a monolithic encoding.
 
 Indeed, in all the techniques discussed above, proof modularity comes with the cost of departing from the usual way of reasoning about inductive types. In the case of Coq à la Carte, and consequently in our work, the departure is not quite dramatic, but it still makes proofs less intuitive. 
 
@@ -562,16 +562,12 @@ Proof.
     remember (Fix (fun A => A -> False)) as A eqn:HeqA.
     assert (not_a : A -> False). { 
         intros X. assert (X' :=  X).
-        rewrite HeqA in X.
-        rewrite fix_def in X.
-        rewrite <- HeqA in X.
-        exact (X X').
+        rewrite HeqA in X. rewrite fix_def in X.
+        rewrite <- HeqA in X. exact (X X').
     }
     apply not_a.
-    rewrite HeqA.
-    rewrite fix_def.
-    rewrite <- HeqA.
-    exact not_a.
+    rewrite HeqA. rewrite fix_def.
+    rewrite <- HeqA. exact not_a.
 Qed.
 \end{lstlisting}
 \caption{\texttt{Fix} is inconsistent.}
